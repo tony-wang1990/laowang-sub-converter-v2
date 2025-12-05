@@ -1,0 +1,45 @@
+{
+  "name": "laowang-sub-converter",
+  "version": "1.0.0",
+  "description": "LaoWang Sub-converter - 专业的代理订阅转换服务",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server/index.js",
+    "start": "npm run build && npm run server",
+    "docker:build": "docker build -t laowang-sub-converter .",
+    "docker:run": "docker run -p 80:80 laowang-sub-converter",
+    "docker:compose": "docker-compose up -d"
+  },
+  "keywords": [
+    "subscription",
+    "converter",
+    "clash",
+    "surge",
+    "shadowrocket",
+    "v2ray",
+    "proxy"
+  ],
+  "author": "LaoWang",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tony-wang1990/laowang-sub-converter"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "vue": "^3.4.0",
+    "vue-i18n": "^9.9.0",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

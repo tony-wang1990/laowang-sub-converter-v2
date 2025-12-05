@@ -1,0 +1,212 @@
+<template>
+  <div class="theme-switcher">
+    <button class="theme-btn" @click="toggleDropdown" :title="currentTheme.name">
+      <span class="theme-icon">{{ currentTheme.icon }}</span>
+      <svg class="arrow" :class="{ rotated: isOpen }" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    
+    <transition name="dropdown">
+      <div v-if="isOpen" class="dropdown">
+        <button 
+          v-for="theme in themes" 
+          :key="theme.id"
+          class="dropdown-item"
+          :class="{ active: currentThemeId === theme.id }"
+          @click="setTheme(theme.id)"
+        >
+          <span class="theme-icon">{{ theme.icon }}</span>
+          <span class="theme-name">{{ theme.name }}</span>
+        </button>
+      </div>
+    </transition>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+
+const themes = [
+  { id: 'default', name: '深邃蓝', icon: '🌌', colors: {
+    primary: '#0a0a0f', secondary: '#12121a', tertiary: '#1a1a2e',
+    accentCyan: '#00d4ff', accentPurple: '#7b2cbf'
+  }},
+  { id: 'ocean', name: '海洋蓝', icon: '🌊', colors: {
+    primary: '#0a1628', secondary: '#0d1f3c', tertiary: '#132744',
+    accentCyan: '#00b4d8', accentPurple: '#0077b6'
+  }},
+  { id: 'forest', name: '森林绿', icon: '🌲', colors: {
+    primary: '#0a120a', secondary: '#0f1a0f', tertiary: '#162316',
+    accentCyan: '#00ff88', accentPurple: '#2d6a4f'
+  }},
+  { id: 'sunset', name: '日落橙', icon: '🌅', colors: {
+    primary: '#1a0a0a', secondary: '#241212', tertiary: '#2e1a1a',
+    accentCyan: '#ff8c00', accentPurple: '#ff006e'
+  }},
+  { id: 'purple', name: '星空紫', icon: '🔮', colors: {
+    primary: '#0f0a1a', secondary: '#150f24', tertiary: '#1e162e',
+    accentCyan: '#a855f7', accentPurple: '#7c3aed'
+  }},
+  { id: 'rose', name: '玫瑰红', icon: '🌹', colors: {
+    primary: '#140a10', secondary: '#1c1016', tertiary: '#26161e',
+    accentCyan: '#fb7185', accentPurple: '#be123c'
+  }},
+  { id: 'gold', name: '金色年华', icon: '✨', colors: {
+    primary: '#12100a', secondary: '#1a1610', tertiary: '#241e16',
+    accentCyan: '#fbbf24', accentPurple: '#b45309'
+  }},
+  { id: 'mint', name: '薄荷清新', icon: '🍃', colors: {
+    primary: '#0a1210', secondary: '#101a16', tertiary: '#16241e',
+    accentCyan: '#34d399', accentPurple: '#059669'
+  }}
+]
+
+const isOpen = ref(false)
+const currentThemeId = ref('default')
+
+const currentTheme = computed(() => {
+  return themes.find(t => t.id === currentThemeId.value) || themes[0]
+})
+
+const toggleDropdown = () => {
+  isOpen.value = !isOpen.value
+}
+
+const setTheme = (themeId) => {
+  currentThemeId.value = themeId
+  const theme = themes.find(t => t.id === themeId)
+  if (theme) {
+    applyTheme(theme.colors)
+    localStorage.setItem('laowang-theme', themeId)
+  }
+  isOpen.value = false
+}
+
+const applyTheme = (colors) => {
+  const root = document.documentElement
+  root.style.setProperty('--color-bg-primary', colors.primary)
+  root.style.setProperty('--color-bg-secondary', colors.secondary)
+  root.style.setProperty('--color-bg-tertiary', colors.tertiary)
+  root.style.setProperty('--color-accent-cyan', colors.accentCyan)
+  root.style.setProperty('--color-accent-purple', colors.accentPurple)
+  root.style.setProperty('--gradient-primary', `linear-gradient(135deg, ${colors.accentCyan} 0%, ${colors.accentPurple} 100%)`)
+  root.style.setProperty('--gradient-bg', `linear-gradient(180deg, ${colors.primary} 0%, ${colors.tertiary} 100%)`)
+  root.style.setProperty('--glass-bg', `rgba(${hexToRgb(colors.tertiary)}, 0.6)`)
+  root.style.setProperty('--shadow-glow-cyan', `0 0 30px ${colors.accentCyan}40`)
+}
+
+const hexToRgb = (hex) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result 
+    ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+    : '26, 26, 46'
+}
+
+// 点击外部关闭
+const handleClickOutside = (e) => {
+  if (!e.target.closest('.theme-switcher')) {
+    isOpen.value = false
+  }
+}
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('laowang-theme')
+  if (savedTheme) {
+    setTheme(savedTheme)
+  }
+  window.addEventListener('click', handleClickOutside)
+})
+</script>
+
+<style scoped>
+.theme-switcher {
+  position: relative;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-border-hover);
+}
+
+.theme-icon {
+  font-size: 1.1rem;
+}
+
+.arrow {
+  transition: transform var(--transition-fast);
+}
+
+.arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 160px;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: var(--z-dropdown);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+}
+
+.dropdown-item.active {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--color-accent-cyan);
+}
+
+.theme-name {
+  flex: 1;
+}
+
+/* Animation */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>

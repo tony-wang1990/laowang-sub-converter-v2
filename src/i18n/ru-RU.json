@@ -1,0 +1,91 @@
+{
+    "nav": {
+        "home": "Главная",
+        "converter": "Конвертер",
+        "shortlink": "Короткие ссылки",
+        "about": "Развёртывание"
+    },
+    "hero": {
+        "title": "LaoWang Конвертер подписок",
+        "subtitle": "Профессиональный конвертер прокси-подписок с поддержкой множества протоколов",
+        "start": "Начать конвертацию",
+        "docs": "Документация"
+    },
+    "converter": {
+        "title": "Конвертер подписок",
+        "subtitle": "Введите ссылку подписки, выберите клиент, конвертируйте одним нажатием",
+        "inputLabel": "Ссылка подписки",
+        "inputPlaceholder": "Введите ссылки подписок, поддерживается многострочный ввод...",
+        "targetClient": "Целевой клиент",
+        "selectClient": "Выберите клиент",
+        "advancedOptions": "Расширенные настройки",
+        "convert": "Сгенерировать",
+        "copy": "Копировать",
+        "copied": "Скопировано!",
+        "download": "Скачать",
+        "qrcode": "QR-код",
+        "reset": "Сбросить"
+    },
+    "clients": {
+        "clash": "Clash",
+        "clashmeta": "Clash Meta",
+        "surge": "Surge",
+        "quantumultx": "Quantumult X",
+        "shadowrocket": "Shadowrocket",
+        "loon": "Loon",
+        "v2rayn": "V2RayN",
+        "v2rayng": "V2RayNG",
+        "surfboard": "Surfboard",
+        "stash": "Stash",
+        "singbox": "sing-box"
+    },
+    "options": {
+        "emoji": "Добавить Emoji к узлам",
+        "udp": "Включить UDP",
+        "skipCert": "Пропустить проверку сертификата",
+        "sort": "Сортировать узлы по имени",
+        "filter": "Фильтр узлов",
+        "filterPlaceholder": "Введите ключевые слова для фильтрации...",
+        "rename": "Правила переименования",
+        "renamePlaceholder": "старое_имя->новое_имя, по одному на строку"
+    },
+    "shortlink": {
+        "title": "Менеджер коротких ссылок",
+        "subtitle": "Создавайте короткие ссылки для удобного обмена",
+        "create": "Создать короткую ссылку",
+        "yourLinks": "Мои короткие ссылки",
+        "noLinks": "Нет коротких ссылок",
+        "originalUrl": "Исходный URL",
+        "shortUrl": "Короткий URL",
+        "clicks": "Клики",
+        "created": "Создано",
+        "delete": "Удалить"
+    },
+    "about": {
+        "title": "О LaoWang Sub-converter",
+        "description": "Открытый конвертер прокси-подписок",
+        "features": "Возможности",
+        "featureList": {
+            "protocols": "Поддержка множества протоколов",
+            "clients": "10+ форматов клиентов",
+            "deploy": "Множество вариантов развертывания",
+            "i18n": "Многоязычная поддержка"
+        },
+        "deploy": "Варианты развертывания",
+        "github": "Репозиторий GitHub",
+        "license": "Лицензия"
+    },
+    "footer": {
+        "copyright": "© 2024 LaoWang Sub-converter",
+        "github": "GitHub",
+        "docs": "Документация"
+    },
+    "common": {
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка",
+        "success": "Успешно",
+        "confirm": "Подтвердить",
+        "cancel": "Отмена",
+        "close": "Закрыть"
+    }
+}

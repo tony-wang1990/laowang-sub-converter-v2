@@ -1,0 +1,91 @@
+{
+    "nav": {
+        "home": "خانه",
+        "converter": "مبدل",
+        "shortlink": "لینک کوتاه",
+        "about": "استقرار"
+    },
+    "hero": {
+        "title": "مبدل اشتراک LaoWang",
+        "subtitle": "سرویس حرفه‌ای تبدیل اشتراک پروکسی با پشتیبانی از پروتکل‌ها و کلاینت‌های متعدد",
+        "start": "شروع تبدیل",
+        "docs": "مستندات"
+    },
+    "converter": {
+        "title": "مبدل اشتراک",
+        "subtitle": "لینک اشتراک را وارد کنید، کلاینت هدف را انتخاب کنید، با یک کلیک تبدیل کنید",
+        "inputLabel": "لینک اشتراک",
+        "inputPlaceholder": "لینک‌های اشتراک را وارد کنید، چند خط پشتیبانی می‌شود...",
+        "targetClient": "کلاینت هدف",
+        "selectClient": "انتخاب کلاینت",
+        "advancedOptions": "گزینه‌های پیشرفته",
+        "convert": "تولید",
+        "copy": "کپی لینک",
+        "copied": "کپی شد!",
+        "download": "دانلود",
+        "qrcode": "کد QR",
+        "reset": "بازنشانی"
+    },
+    "clients": {
+        "clash": "Clash",
+        "clashmeta": "Clash Meta",
+        "surge": "Surge",
+        "quantumultx": "Quantumult X",
+        "shadowrocket": "Shadowrocket",
+        "loon": "Loon",
+        "v2rayn": "V2RayN",
+        "v2rayng": "V2RayNG",
+        "surfboard": "Surfboard",
+        "stash": "Stash",
+        "singbox": "sing-box"
+    },
+    "options": {
+        "emoji": "افزودن ایموجی به نودها",
+        "udp": "فعال‌سازی UDP",
+        "skipCert": "رد شدن از تأیید گواهی",
+        "sort": "مرتب‌سازی نودها بر اساس نام",
+        "filter": "فیلتر نود",
+        "filterPlaceholder": "کلمات کلیدی برای فیلتر وارد کنید...",
+        "rename": "قوانین تغییر نام نود",
+        "renamePlaceholder": "نام_قدیمی->نام_جدید، هر خط یکی"
+    },
+    "shortlink": {
+        "title": "مدیریت لینک کوتاه",
+        "subtitle": "لینک‌های کوتاه برای اشتراک‌گذاری آسان ایجاد کنید",
+        "create": "ایجاد لینک کوتاه",
+        "yourLinks": "لینک‌های کوتاه من",
+        "noLinks": "هنوز لینک کوتاهی وجود ندارد",
+        "originalUrl": "URL اصلی",
+        "shortUrl": "URL کوتاه",
+        "clicks": "کلیک‌ها",
+        "created": "ایجاد شده",
+        "delete": "حذف"
+    },
+    "about": {
+        "title": "درباره مبدل LaoWang",
+        "description": "یک مبدل اشتراک پروکسی متن‌باز",
+        "features": "ویژگی‌ها",
+        "featureList": {
+            "protocols": "پشتیبانی از پروتکل‌های متعدد",
+            "clients": "پشتیبانی از ۱۰+ فرمت کلاینت",
+            "deploy": "گزینه‌های استقرار متعدد",
+            "i18n": "پشتیبانی چندزبانه"
+        },
+        "deploy": "گزینه‌های استقرار",
+        "github": "مخزن GitHub",
+        "license": "مجوز"
+    },
+    "footer": {
+        "copyright": "© ۲۰۲۴ مبدل LaoWang",
+        "github": "GitHub",
+        "docs": "مستندات"
+    },
+    "common": {
+        "loading": "در حال بارگذاری...",
+        "error": "خطایی رخ داد",
+        "success": "موفق",
+        "confirm": "تأیید",
+        "cancel": "لغو",
+        "close": "بستن"
+    }
+}

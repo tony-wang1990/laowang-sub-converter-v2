@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Frontend (Nginx serving static files)
+  frontend:
+    build: .
+    container_name: laowang-sub-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - laowang-network
+
+  # Backend (Node.js API server)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: laowang-sub-backend
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    expose:
+      - "3000"
+    restart: unless-stopped
+    networks:
+      - laowang-network
+    volumes:
+      - ./data:/app/data
+
+networks:
+  laowang-network:
+    driver: bridge
+
+# Optional: Use this for development
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
