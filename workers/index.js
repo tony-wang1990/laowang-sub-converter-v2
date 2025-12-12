@@ -316,6 +316,7 @@ function convertToTarget(nodes, target, options) {
         case 'stash':
             return convertToClash(nodes, options)
         case 'surge':
+        case 'surfboard':
             return convertToSurge(nodes, options)
         case 'quantumultx':
             return convertToQuantumultX(nodes, options)
