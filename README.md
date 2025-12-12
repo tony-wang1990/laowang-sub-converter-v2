@@ -22,7 +22,7 @@
 - 📱 **多客户端格式** - Clash、Surge、Quantumult X、Shadowrocket、Loon、V2RayN 等 10+ 客户端
 - 🔗 **短链接服务** - 生成短链接便于分享，支持访问统计
 - 🌍 **多语言界面** - 中文、英文、俄语、波斯语
-- 🐳 **多种部署方式** - Docker、Cloudflare、Vercel、Netlify、VPS
+- 🐳 **VPS Docker 部署** - 支持 AMD64 和 ARM64 多架构
 - ⚙️ **高级配置** - 节点过滤、重命名、排序、Emoji 添加
 - 🎨 **多主题切换** - 8 种精美主题随心切换
 
@@ -60,7 +60,7 @@
 ## 🚀 快速开始
 
 > [!IMPORTANT]
-> 本项目需要同时运行 **前端 + 后端** 才能使用完整的订阅转换功能。请使用 **Docker Compose** 部署。
+> 本项目需要同时运行 **前端 + 后端** 才能使用完整的订阅转换功能。请使用 **Docker Compose** 部署到您的 VPS。
 
 ### Docker Compose（VPS 部署）
 
@@ -80,70 +80,13 @@ docker ps
 
 > 💡 **多架构支持**：Docker 镜像同时支持 **AMD64** (Intel/AMD 服务器) 和 **ARM64** (树莓派/Oracle ARM 等)。
 
-### 本地开发
+### 更新到最新版本
 
 ```bash
-# 安装依赖
-npm install
-
-# 启动开发服务器
-npm run dev
-
-# 构建生产版本
-npm run build
+cd laowang-sub-converter
+git pull
+docker-compose up -d --build
 ```
-
----
-
-## ☁️ 一键部署
-
-| 平台 | 部署按钮 |
-|------|----------|
-| **Vercel** | [![Deploy](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tony-wang1990/laowang-sub-converter) |
-| **Netlify** | [![Deploy](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tony-wang1990/laowang-sub-converter) |
-| **Cloudflare Pages** | [![Deploy](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/tony-wang1990/laowang-sub-converter) |
-
-> 💡 **多架构支持**：Docker 镜像同时支持 **AMD64** (Intel/AMD 服务器) 和 **ARM64** (树莓派/Oracle ARM 等)。
-
----
-
-## 📘 Cloudflare Pages 部署教程
-
-如果您想使用 GitHub Actions 自动部署到 Cloudflare Pages，请按以下步骤操作：
-
-### 步骤 1：Fork 本仓库
-
-点击右上角 **Fork** 按钮，将本项目复制到您的账号下。
-
-### 步骤 2：获取 Cloudflare 凭据
-
-1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. 在首页左侧边栏找到并复制 **Account ID**
-3. 点击右上角头像 → **My Profile** → **API Tokens** → **Create Token**
-4. 选择 **Cloudflare Pages** 模板（或自定义权限：Account-Cloudflare Pages-Edit）
-5. 复制生成的 **API Token**
-
-### 步骤 3：配置 GitHub Secrets
-
-1. 进入您 Fork 的仓库
-2. 点击 **Settings** → **Secrets and variables** → **Actions**
-3. 点击 **New repository secret**，添加以下两个：
-
-| Name | Value |
-|------|-------|
-| `CLOUDFLARE_ACCOUNT_ID` | 您的 Account ID |
-| `CLOUDFLARE_API_TOKEN` | 您的 API Token |
-
-### 步骤 4：触发部署
-
-1. 进入 **Actions** 标签页
-2. 点击左侧 **Deploy to Cloudflare Pages**
-3. 点击 **Run workflow** → **Run workflow**
-4. 等待部署完成（约 2-3 分钟）
-
-### 步骤 5：访问您的站点
-
-部署完成后，访问 `https://laowang-sub-converter.pages.dev` 或您在 Cloudflare 设置的自定义域名。
 
 ---
 
