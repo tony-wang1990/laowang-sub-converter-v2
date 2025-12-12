@@ -22,7 +22,7 @@
 - 📱 **多客户端格式** - Clash、Surge、Quantumult X、Shadowrocket、Loon、V2RayN 等 10+ 客户端
 - 🔗 **短链接服务** - 生成短链接便于分享，支持访问统计
 - 🌍 **多语言界面** - 中文、英文、俄语、波斯语
-- 🐳 **VPS Docker 部署** - 支持 AMD64 和 ARM64 多架构
+- 🐳 **多种部署方式** - Vercel、Netlify、VPS Docker，一键部署完整功能
 - ⚙️ **高级配置** - 节点过滤、重命名、排序、Emoji 添加
 - 🎨 **多主题切换** - 8 种精美主题随心切换
 
@@ -57,12 +57,20 @@
 
 ---
 
-## 🚀 快速开始
+## ☁️ 一键部署
 
-> [!IMPORTANT]
-> 本项目需要同时运行 **前端 + 后端** 才能使用完整的订阅转换功能。请使用 **Docker Compose** 部署到您的 VPS。
+> ✅ 所有部署方式都支持**完整的订阅转换功能**，使用 Serverless Functions 实现。
 
-### Docker Compose（VPS 部署）
+| 平台 | 部署按钮 | 说明 |
+|------|----------|------|
+| **Vercel** | [![Deploy](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tony-wang1990/laowang-sub-converter) | 推荐，速度快 |
+| **Netlify** | [![Deploy](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tony-wang1990/laowang-sub-converter) | 免费额度高 |
+
+---
+
+## 🚀 VPS Docker 部署
+
+如果您有自己的服务器，推荐使用 Docker Compose 部署：
 
 ```bash
 # 1. 克隆仓库
@@ -76,7 +84,7 @@ docker-compose up -d
 docker ps
 ```
 
-访问 `http://服务器IP` 即可使用完整的订阅转换功能！
+访问 `http://服务器IP` 即可使用！
 
 > 💡 **多架构支持**：Docker 镜像同时支持 **AMD64** (Intel/AMD 服务器) 和 **ARM64** (树莓派/Oracle ARM 等)。
 
