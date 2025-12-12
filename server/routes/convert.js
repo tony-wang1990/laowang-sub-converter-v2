@@ -323,6 +323,87 @@ function convertToTarget(nodes, target, options) {
 
 // ... (Clash conversion remains same)
 
+// Surge 格式
+function convertToSurge(nodes, options) {
+    return nodes.map(node => {
+        switch (node.type) {
+            case 'ss':
+                return `${node.name} = ss, ${node.server}, ${node.port}, encrypt-method=${node.method}, password=${node.password}`
+            case 'vmess':
+                let vmess = `${node.name} = vmess, ${node.server}, ${node.port}, username=${node.uuid}`
+                if (node.tls) vmess += ', tls=true'
+                if (node.ws) {
+                    vmess += ', ws=true'
+                    if (node.ws.path) vmess += `, ws-path=${node.ws.path}`
+                    if (node.ws.headers && node.ws.headers.Host) vmess += `, ws-headers=Host:${node.ws.headers.Host}`
+                }
+                if (options.skipCert) vmess += ', skip-cert-verify=true'
+                return vmess
+            case 'trojan':
+                let trojan = `${node.name} = trojan, ${node.server}, ${node.port}, password=${node.password}`
+                if (node.sni) trojan += `, sni=${node.sni}`
+                if (options.skipCert) trojan += ', skip-cert-verify=true'
+                return trojan
+            default:
+                return ''
+        }
+    }).filter(Boolean).join('\n')
+}
+
+// Quantumult X 格式
+function convertToQuantumultX(nodes, options) {
+    return nodes.map(node => {
+        switch (node.type) {
+            case 'ss':
+                return `shadowsocks=${node.server}:${node.port}, method=${node.method}, password=${node.password}, tag=${node.name}`
+            case 'vmess':
+                let vmess = `vmess=${node.server}:${node.port}, method=auto, password=${node.uuid}, tag=${node.name}`
+                if (node.tls) vmess += ', tls=1'
+                if (node.ws) {
+                    vmess += ', obfs=ws'
+                    if (node.ws.path) vmess += `, obfs-uri=${node.ws.path}`
+                    if (node.ws.headers && node.ws.headers.Host) vmess += `, obfs-host=${node.ws.headers.Host}`
+                }
+                if (options.skipCert) vmess += ', tls-verification=false'
+                return vmess
+            case 'trojan':
+                let trojan = `trojan=${node.server}:${node.port}, password=${node.password}, tag=${node.name}`
+                if (node.sni) trojan += `, tls-host=${node.sni}`
+                if (options.skipCert) trojan += ', tls-verification=false'
+                return trojan
+            default:
+                return ''
+        }
+    }).filter(Boolean).join('\n')
+}
+
+// Loon 格式
+function convertToLoon(nodes, options) {
+    return nodes.map(node => {
+        switch (node.type) {
+            case 'ss':
+                return `${node.name} = Shadowsocks,${node.server},${node.port},${node.method},"${node.password}"`
+            case 'vmess':
+                let vmess = `${node.name} = vmess,${node.server},${node.port},auto,"${node.uuid}"`
+                if (node.ws) {
+                    vmess += ',transport=ws'
+                    if (node.ws.path) vmess += `,path=${node.ws.path}`
+                    if (node.ws.headers && node.ws.headers.Host) vmess += `,host=${node.ws.headers.Host}`
+                }
+                if (node.tls) vmess += ',over-tls=true'
+                if (options.skipCert) vmess += ',skip-cert-verify=true'
+                return vmess
+            case 'trojan':
+                let trojan = `${node.name} = trojan,${node.server},${node.port},"${node.password}"`
+                if (node.sni) trojan += `,sni=${node.sni}`
+                if (options.skipCert) trojan += ',skip-cert-verify=true'
+                return trojan
+            default:
+                return ''
+        }
+    }).filter(Boolean).join('\n')
+}
+
 function convertToBase64(nodes) {
     const links = nodes.map(node => {
         switch (node.type) {
