@@ -1,23 +1,18 @@
 name = "laowang-sub-converter"
-main = "workers/src/index.js"
+main = "workers/index.js"
 compatibility_date = "2024-01-01"
 
-[site]
-bucket = "./dist"
+# Workers 设置
+workers_dev = true
+
+# 路由配置（可选，用于自定义域名）
+# [[routes]]
+# pattern = "sub.yourdomain.com/*"
+# zone_name = "yourdomain.com"
 
 [build]
-command = "npm run build"
+command = ""
 
-# 环境变量
-[vars]
-ENVIRONMENT = "production"
-
-# 路由规则
-[[routes]]
-pattern = "/api/*"
-script = "workers/src/index.js"
-
-# 开发环境
-[dev]
-port = 8787
-local_protocol = "http"
+# 环境变量（如需要可取消注释）
+# [vars]
+# ENVIRONMENT = "production"

@@ -65,6 +65,30 @@
 |------|----------|------|
 | **Vercel** | [![Deploy](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tony-wang1990/laowang-sub-converter) | 推荐，速度快 |
 | **Netlify** | [![Deploy](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/tony-wang1990/laowang-sub-converter) | 免费额度高 |
+| **Cloudflare Workers** | 见下方教程 | 全球边缘，超快 |
+
+### Cloudflare Workers 部署
+
+1. **Fork 本仓库**到您的 GitHub 账号
+
+2. **安装 Wrangler CLI**：
+```bash
+npm install -g wrangler
+```
+
+3. **登录 Cloudflare**：
+```bash
+wrangler login
+```
+
+4. **克隆并部署**：
+```bash
+git clone https://github.com/你的用户名/laowang-sub-converter.git
+cd laowang-sub-converter
+wrangler deploy
+```
+
+5. 部署成功后，访问 `https://laowang-sub-converter.你的账号.workers.dev` 即可使用！
 
 ---
 
