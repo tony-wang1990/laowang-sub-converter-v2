@@ -26,8 +26,8 @@ WORKDIR /app
 # 复制package文件
 COPY package*.json ./
 
-# 只安装生产依赖
-RUN npm install --omit=dev
+# 只安装生产依赖 + tsx运行TypeScript
+RUN npm install --omit=dev && npm install -g tsx
 
 # 只复制必要文件
 COPY --from=builder /app/dist ./dist
@@ -43,5 +43,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# 启动应用
-CMD ["node", "server/index.js"]
+# 使用tsx运行TypeScript服务器
+CMD ["tsx", "server/index.ts"]
