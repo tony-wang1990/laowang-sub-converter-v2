@@ -1,6 +1,6 @@
-
 import express, { Request, Response } from 'express'
 import { getSubscriptions, addSubscription, deleteSubscription } from '../utils/db.js'
+import { parseSubscription } from '../utils/parsers.js'
 
 const router = express.Router()
 
