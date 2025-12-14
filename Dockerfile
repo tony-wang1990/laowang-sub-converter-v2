@@ -19,8 +19,8 @@ RUN npm run build
 # Build the backend
 RUN npx tsc -p tsconfig.server.json
 
-# Install only production dependencies for server
-RUN npm install --only=production
+# Prune dev dependencies
+RUN npm prune --production
 
 # Production stage - Nginx for frontend + Node for backend
 FROM node:20-alpine
