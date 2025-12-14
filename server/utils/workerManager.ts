@@ -60,7 +60,8 @@ class WorkerPool {
         // Actually, if I renamed `worker.js` to `worker.ts`, `worker.js` no longer exists on disk.
         // So I MUST change the path to `worker.ts`.
 
-        const worker = new Worker(path.join(__dirname, 'worker.ts')) as CustomWorker
+        const ext = __filename.endsWith('.ts') ? '.ts' : '.js'
+        const worker = new Worker(path.join(__dirname, `worker${ext}`)) as CustomWorker
 
         worker.on('message', (msg) => {
             const { id, result, error } = msg

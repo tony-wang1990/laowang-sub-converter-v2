@@ -13,7 +13,11 @@ RUN npm install
 COPY . .
 
 # Build the frontend
+# Build the frontend
 RUN npm run build
+
+# Build the backend
+RUN npx tsc -p tsconfig.server.json
 
 # Install only production dependencies for server
 RUN npm install --only=production
@@ -29,8 +33,8 @@ WORKDIR /app
 # Copy built frontend files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy server files and production dependencies
-COPY --from=builder /app/server ./server
+# Copy compiled server files and production dependencies
+COPY --from=builder /app/dist-server ./dist-server
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 
@@ -50,7 +54,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # Create startup script
 RUN echo '#!/bin/sh' > /app/start.sh && \
   echo 'sed -i "s/backend:3000/127.0.0.1:3000/g" /etc/nginx/http.d/default.conf' >> /app/start.sh && \
-  echo 'node --import tsx/esm server/index.ts &' >> /app/start.sh && \
+  echo 'node dist-server/server/index.js &' >> /app/start.sh && \
   echo 'nginx -g "daemon off;"' >> /app/start.sh && \
   chmod +x /app/start.sh
 

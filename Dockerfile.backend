@@ -4,11 +4,14 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy package files
+# Copy package files
 COPY package*.json ./
+COPY tsconfig.server.json ./
 COPY server ./server
 
-# Install production dependencies only
-# Install production dependencies only
+# Install dependencies and build
+RUN npm install
+RUN npx tsc -p tsconfig.server.json
 RUN npm install --only=production
 
 # Create data directory
@@ -26,5 +29,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:3000/health || exit 1
 
 # Start server
-# Start server
-CMD ["node", "--import", "tsx/esm", "server/index.ts"]
+CMD ["node", "dist-server/server/index.js"]
