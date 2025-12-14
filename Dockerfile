@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ALL dependencies (including devDependencies for build)
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Install only production dependencies for server
-RUN npm ci --only=production
+RUN npm install --only=production
 
 # Production stage - Nginx for frontend + Node for backend
 FROM node:20-alpine
