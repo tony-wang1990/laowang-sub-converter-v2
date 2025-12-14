@@ -1,6 +1,11 @@
 import express, { Request, Response } from 'express'
-import { getSubscriptions, addSubscription, deleteSubscription } from '../utils/db.js'
-import { parseSubscription } from '../utils/parsers.js'
+import {
+    getSubscriptions,
+    addSubscription,
+    updateSubscription,
+    deleteSubscription,
+    getGroups
+} from '../utils/db.js'
 
 const router = express.Router()
 
@@ -15,14 +20,33 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const { name, url } = req.body
+        const { name, url, group_name, tags, description } = req.body
         if (!name || !url) {
-            return res.status(400).json({ error: 'Name and URL are required' })
+            return res.status(400).json({ success: false, error: 'Name and URL are required' })
         }
-        const sub = await addSubscription(name, url)
+        const sub = await addSubscription(name, url, group_name, tags, description)
         res.json({ success: true, data: sub })
     } catch (err: any) {
-        res.status(500).json({ error: err.message || 'Unknown error' })
+        res.status(500).json({ success: false, error: err.message || 'Unknown error' })
+    }
+})
+
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const { name, url, group_name, tags, description } = req.body
+
+        if (!name || !url) {
+            return res.status(400).json({ success: false, error: 'Name and URL are required' })
+        }
+
+        const sub = await updateSubscription(parseInt(id), {
+            name, url, group_name, tags, description
+        })
+        res.json({ success: true, data: sub })
+    } catch (err: any) {
+        const status = err.message === 'Subscription not found' ? 404 : 500
+        res.status(status).json({ success: false, error: err.message || 'Unknown error' })
     }
 })
 
@@ -32,7 +56,16 @@ router.delete('/:id', async (req: Request, res: Response) => {
         await deleteSubscription(parseInt(id))
         res.json({ success: true })
     } catch (err: any) {
-        res.status(500).json({ error: err.message || 'Unknown error' })
+        res.status(500).json({ success: false, error: err.message || 'Unknown error' })
+    }
+})
+
+router.get('/groups', async (req: Request, res: Response) => {
+    try {
+        const groups = await getGroups()
+        res.json({ success: true, data: groups })
+    } catch (err: any) {
+        res.status(500).json({ success: false, error: err.message || 'Unknown error' })
     }
 })
 

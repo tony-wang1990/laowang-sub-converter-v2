@@ -14,13 +14,19 @@
 
         <!-- 订阅链接输入 -->
         <div class="form-group">
-          <label class="form-label">{{ $t('converter.inputLabel') }}</label>
+          <label class="form-label">
+            {{ $t('converter.inputLabel') }}
+            <span class="label-hint">（支持多个订阅：每行一个或用 | 分隔）</span>
+          </label>
           <textarea 
             class="form-textarea"
             v-model="subscriptionUrl"
             :placeholder="$t('converter.inputPlaceholder')"
             rows="4"
           ></textarea>
+          <p v-if="urlCount > 1" class="url-count-hint">
+            📦 检测到 {{ urlCount }} 个订阅链接，将自动合并
+          </p>
         </div>
 
         <!-- 客户端选择 -->
@@ -57,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ClientSelector from '../components/ClientSelector.vue'
 import AdvancedOptions from '../components/AdvancedOptions.vue'
 import ResultPanel from '../components/ResultPanel.vue'
@@ -70,13 +76,24 @@ const advancedOptions = ref({
   udp: true,
   skipCert: false,
   sort: false,
+  tfo: false,
   filter: '',
-  rename: ''
+  rename: '',
+  mode: 'fallback'
 })
 
 const loading = ref(false)
 const convertedUrl = ref('')
 const error = ref('')
+
+// 计算订阅URL数量
+const urlCount = computed(() => {
+  if (!subscriptionUrl.value) return 0
+  return subscriptionUrl.value
+    .split(/[\n|]/)
+    .filter(u => u.trim() && u.trim().startsWith('http'))
+    .length
+})
 
 const convertSubscription = async () => {
   if (!subscriptionUrl.value || !selectedClient.value) return
@@ -103,6 +120,16 @@ const convertSubscription = async () => {
 
     if (advancedOptions.value.rename) {
       params.append('rename', advancedOptions.value.rename)
+    }
+
+    // 添加转换模式
+    if (advancedOptions.value.mode) {
+      params.append('mode', advancedOptions.value.mode)
+    }
+
+    // 添加TFO支持
+    if (advancedOptions.value.tfo) {
+      params.append('tfo', '1')
     }
 
     // 生成转换后的链接

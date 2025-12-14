@@ -1,61 +1,43 @@
-# Multi-stage build for optimal image size
-FROM node:20-alpine AS builder
+# Dockerfile for production deployment
+# 支持 Zeabur, VPS, 和其他容器平台
 
+FROM node:18-alpine AS builder
+
+# 设置工作目录
 WORKDIR /app
 
-# Copy package files
+# 复制package文件
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies for build)
-RUN npm install
+# 安装依赖
+RUN npm ci --only=production
 
-# Copy source code
+# 复制源代码
 COPY . .
 
-# Build the frontend
-# Build the frontend
+# 构建前端
 RUN npm run build
 
-# Build the backend
-RUN npx tsc -p tsconfig.server.json
-
-# Prune dev dependencies
-RUN npm prune --production
-
-# Production stage - Nginx for frontend + Node for backend
-FROM node:20-alpine
-
-# Install nginx
-RUN apk add --no-cache nginx
+# 生产环境镜像
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy built frontend files
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copy compiled server files and production dependencies
-COPY --from=builder /app/dist-server ./dist-server
+# 只复制必要文件
+COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server ./server
 
-# Copy nginx configuration
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+# 创建数据目录
+RUN mkdir -p /app/data
 
-# Create nginx directories
-RUN mkdir -p /run/nginx
+# 暴露端口
+EXPOSE 3000
 
-# Expose ports (80 for nginx, 3000 for API)
-EXPOSE 80 3000
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
-
-# Create startup script
-RUN echo '#!/bin/sh' > /app/start.sh && \
-  echo 'sed -i "s/backend:3000/127.0.0.1:3000/g" /etc/nginx/http.d/default.conf' >> /app/start.sh && \
-  echo 'node dist-server/server/index.js &' >> /app/start.sh && \
-  echo 'nginx -g "daemon off;"' >> /app/start.sh && \
-  chmod +x /app/start.sh
-
-CMD ["/app/start.sh"]
+# 启动应用
+CMD ["node", "server/index.js"]

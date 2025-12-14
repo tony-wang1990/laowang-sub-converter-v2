@@ -31,8 +31,11 @@
           <div v-if="newShortLink" class="new-link-result">
             <span class="label">短链接：</span>
             <input type="text" class="form-input" :value="newShortLink" readonly />
-            <button class="btn btn-secondary" @click="copyNewLink">
+            <button class="btn btn-secondary" @click="copyNewLink" title="复制链接">
               📋
+            </button>
+            <button class="btn btn-secondary" @click="showQRForNewLink" title="查看二维码">
+              📱
             </button>
           </div>
         </div>
@@ -67,71 +70,95 @@
               <span class="clicks">{{ link.clicks }}</span>
               <span class="created">{{ formatDate(link.createdAt) }}</span>
               <span class="actions">
-                <button class="btn-icon" @click="copyLink(link.shortUrl)">📋</button>
-                <button class="btn-icon delete" @click="deleteLink(link.id)">🗑️</button>
+                <button class="btn-icon" @click="copyLink(link.shortUrl)" title="复制链接">📋</button>
+                <button class="btn-icon" @click="showQRForLink(link.shortUrl)" title="查看二维码">📱</button>
+                <button class="btn-icon delete" @click="deleteLink(link.id)" title="删除">🗑️</button>
               </span>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- QR Code Modal -->
+    <QRCodeModal 
+      :visible="showQRModal" 
+      :url="qrCodeUrl"
+      @close="showQRModal = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import QRCodeModal from '../components/QRCodeModal.vue'
 
 interface ShortLink {
   id: string;
   shortUrl: string;
   originalUrl: string;
   clicks: number;
-  createdAt: Date;
+  createdAt: Date | string;
 }
 
 const originalUrl = ref('')
 const newShortLink = ref('')
 const loading = ref(false)
+const error = ref('')
 
-// 模拟短链接数据
-const shortLinks = reactive<ShortLink[]>([
-  {
-    id: '1',
-    shortUrl: 'https://lw.to/abc123',
-    originalUrl: 'https://example.com/very-long-subscription-url-that-needs-shortening',
-    clicks: 42,
-    createdAt: new Date('2024-01-15')
-  },
-  {
-    id: '2',
-    shortUrl: 'https://lw.to/xyz789',
-    originalUrl: 'https://another-example.com/subscription',
-    clicks: 128,
-    createdAt: new Date('2024-01-10')
+// QR Code modal state
+const showQRModal = ref(false)
+const qrCodeUrl = ref('')
+
+// Real short links data from API
+const shortLinks = reactive<ShortLink[]>([])
+
+// Fetch short links from API
+const fetchShortLinks = async () => {
+  try {
+    const response = await fetch('/api/shortlink/list')
+    const data = await response.json()
+    
+    if (data.links) {
+      shortLinks.splice(0, shortLinks.length, ...data.links.map((link: any) => ({
+        ...link,
+        createdAt: new Date(link.createdAt)
+      })))
+    }
+  } catch (err) {
+    console.error('Failed to fetch short links:', err)
+    error.value = '获取短链接列表失败'
   }
-])
+}
 
 const createShortLink = async () => {
   if (!originalUrl.value) return
   
   loading.value = true
+  error.value = ''
   
   try {
-    // 模拟 API 调用
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    const shortCode = Math.random().toString(36).substring(2, 8)
-    newShortLink.value = `${window.location.origin}/s/${shortCode}`
-    
-    shortLinks.unshift({
-      id: Date.now().toString(),
-      shortUrl: newShortLink.value,
-      originalUrl: originalUrl.value,
-      clicks: 0,
-      createdAt: new Date()
+    const response = await fetch('/api/shortlink', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ url: originalUrl.value })
     })
+
+    if (!response.ok) {
+      throw new Error('创建短链接失败')
+    }
+
+    const data = await response.json()
+    newShortLink.value = data.shortUrl
+    
+    // Refresh the list
+    await fetchShortLinks()
     
     originalUrl.value = ''
+  } catch (err: any) {
+    error.value = err.message || '创建短链接失败'
   } finally {
     loading.value = false
   }
@@ -140,7 +167,7 @@ const createShortLink = async () => {
 const copyLink = async (url: string) => {
   try {
     await navigator.clipboard.writeText(url)
-    // 可以添加 toast 提示
+    // You can add toast notification here
   } catch (err: any) {
     console.error('Copy failed:', err)
   }
@@ -148,10 +175,23 @@ const copyLink = async (url: string) => {
 
 const copyNewLink = () => copyLink(newShortLink.value)
 
-const deleteLink = (id: string) => {
-  const index = shortLinks.findIndex(l => l.id === id)
-  if (index > -1) {
-    shortLinks.splice(index, 1)
+const deleteLink = async (id: string) => {
+  if (!confirm('确定要删除这个短链接吗？')) return
+  
+  try {
+    const response = await fetch(`/api/shortlink/${id}`, {
+      method: 'DELETE'
+    })
+
+    if (!response.ok) {
+      throw new Error('删除失败')
+    }
+
+    // Refresh the list
+    await fetchShortLinks()
+  } catch (err: any) {
+    console.error('Delete failed:', err)
+    error.value = '删除短链接失败'
   }
 }
 
@@ -160,13 +200,32 @@ const truncateUrl = (url: string, maxLength = 40) => {
   return url.substring(0, maxLength) + '...'
 }
 
-const formatDate = (date: Date) => {
+const formatDate = (date: Date | string) => {
+  const d = typeof date === 'string' ? new Date(date) : date
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit'
-  }).format(date)
+  }).format(d)
 }
+
+// QR Code functions
+const showQRForNewLink = () => {
+  if (newShortLink.value) {
+    qrCodeUrl.value = newShortLink.value
+    showQRModal.value = true
+  }
+}
+
+const showQRForLink = (url: string) => {
+  qrCodeUrl.value = url
+  showQRModal.value = true
+}
+
+// Load short links on mount
+onMounted(() => {
+  fetchShortLinks()
+})
 </script>
 
 <style scoped>
@@ -258,7 +317,7 @@ const formatDate = (date: Date) => {
 .table-header,
 .table-row {
   display: grid;
-  grid-template-columns: 200px 1fr 80px 100px 80px;
+  grid-template-columns: 200px 1fr 80px 100px 120px;
   gap: 1rem;
   padding: 1rem;
   align-items: center;

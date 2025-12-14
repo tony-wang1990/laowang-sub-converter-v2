@@ -5,7 +5,12 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        name: 'Home',
+        name: 'Dashboard',
+        component: () => import('../views/Dashboard.vue')
+    },
+    {
+        path: '/old-home',
+        name: 'OldHome',
         component: () => import('../views/Home.vue')
     },
     {

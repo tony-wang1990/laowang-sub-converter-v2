@@ -42,6 +42,12 @@
             <span class="checkmark"></span>
             <span>{{ $t('options.sort') }}</span>
           </label>
+
+          <label class="checkbox-item">
+            <input type="checkbox" v-model="options.tfo" />
+            <span class="checkmark"></span>
+            <span>TCP Fast Open</span>
+          </label>
         </div>
 
         <!-- 过滤规则 -->
@@ -64,6 +70,21 @@
             :placeholder="$t('options.renamePlaceholder')"
             rows="3"
           ></textarea>
+        </div>
+
+        <!-- 转换模式选择 -->
+        <div class="form-group">
+          <label class="form-label">转换模式</label>
+          <select v-model="options.mode" class="form-select">
+            <option value="fallback">智能模式（推荐）</option>
+            <option value="local">本地转换（隐私优先）</option>
+            <option value="remote">远程转换（兼容性优先）</option>
+          </select>
+          <p class="mode-hint">
+            <span v-if="options.mode === 'fallback'">✨ 优先使用本地转换，失败自动切换远程API</span>
+            <span v-if="options.mode === 'local'">🔒 仅使用本地转换，保护隐私但可能兼容性较弱</span>
+            <span v-if="options.mode === 'remote'">🌐 使用远程API，兼容性最强但订阅链接会发送到第三方</span>
+          </p>
         </div>
       </div>
     </transition>
@@ -89,8 +110,10 @@ const options = reactive({
   udp: true,
   skipCert: false,
   sort: false,
+  tfo: false,  // 新增：TCP Fast Open
   filter: '',
-  rename: ''
+  rename: '',
+  mode: 'fallback'
 })
 
 watch(options, (newVal) => {

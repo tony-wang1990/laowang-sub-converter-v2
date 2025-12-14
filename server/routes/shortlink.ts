@@ -1,58 +1,17 @@
-
 import express, { Request, Response } from 'express'
 import crypto from 'crypto'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import {
+    createShortLink,
+    getShortLinkByCode,
+    getAllShortLinks,
+    deleteShortLink,
+    incrementShortLinkClicks
+} from '../utils/db.js'
 
 const router = express.Router()
 
-// 获取 __dirname
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-// 数据存储路径
-const DATA_FILE = path.join(__dirname, '../data/shortlinks.json')
-
-interface ShortLink {
-    originalUrl: string;
-    createdAt: string;
-    clicks: number;
-}
-
-interface LinkData {
-    links: Record<string, ShortLink>;
-}
-
-// 确保数据目录存在
-function ensureDataDir() {
-    const dir = path.dirname(DATA_FILE)
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true })
-    }
-    if (!fs.existsSync(DATA_FILE)) {
-        fs.writeFileSync(DATA_FILE, JSON.stringify({ links: {} }))
-    }
-}
-
-// 读取数据
-function readData(): LinkData {
-    ensureDataDir()
-    try {
-        return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'))
-    } catch (e) {
-        return { links: {} }
-    }
-}
-
-// 写入数据
-function writeData(data: LinkData) {
-    ensureDataDir()
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2))
-}
-
 // 生成短码
-function generateShortCode(length = 6) {
+function generateShortCode(length = 6): string {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     let result = ''
     const randomBytes = crypto.randomBytes(length)
@@ -62,8 +21,8 @@ function generateShortCode(length = 6) {
     return result
 }
 
-// 创建短链接
-router.post('/', (req: Request, res: Response) => {
+// POST /api/shortlink - 创建短链接
+router.post('/', async (req: Request, res: Response) => {
     try {
         const { url } = req.body
 
@@ -78,43 +37,48 @@ router.post('/', (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Invalid URL format' })
         }
 
-        const data = readData()
-
         // 检查是否已存在相同 URL
-        for (const [code, link] of Object.entries(data.links)) {
-            if (link.originalUrl === url) {
-                const baseUrl = `${req.protocol}://${req.get('host')}`
-                return res.json({
-                    shortUrl: `${baseUrl}/s/${code}`,
-                    id: code,
-                    originalUrl: url,
-                    created: link.createdAt,
-                    clicks: link.clicks
-                })
+        const existingLinks = await getAllShortLinks()
+        const existingLink = existingLinks.find(link => link.original_url === url)
+
+        if (existingLink) {
+            const baseUrl = `${req.protocol}://${req.get('host')}`
+            return res.json({
+                shortUrl: `${baseUrl}/s/${existingLink.short_code}`,
+                id: existingLink.short_code,
+                originalUrl: url,
+                created: existingLink.created_at,
+                clicks: existingLink.clicks
+            })
+        }
+
+        // 生成新短码，确保唯一性
+        let shortCode = generateShortCode()
+        let attempts = 0
+        const maxAttempts = 10
+
+        while (attempts < maxAttempts) {
+            const existing = await getShortLinkByCode(shortCode)
+            if (!existing) {
+                break
             }
-        }
-
-        // 生成新短码
-        let shortCode: string
-        do {
             shortCode = generateShortCode()
-        } while (data.links[shortCode])
-
-        // 存储短链接
-        data.links[shortCode] = {
-            originalUrl: url,
-            createdAt: new Date().toISOString(),
-            clicks: 0
+            attempts++
         }
 
-        writeData(data)
+        if (attempts >= maxAttempts) {
+            return res.status(500).json({ error: 'Failed to generate unique short code' })
+        }
+
+        // 创建短链接
+        const newLink = await createShortLink(shortCode, url)
 
         const baseUrl = `${req.protocol}://${req.get('host')}`
         res.json({
             shortUrl: `${baseUrl}/s/${shortCode}`,
             id: shortCode,
             originalUrl: url,
-            created: data.links[shortCode].createdAt,
+            created: newLink.created_at,
             clicks: 0
         })
 
@@ -124,40 +88,38 @@ router.post('/', (req: Request, res: Response) => {
     }
 })
 
-// 获取所有短链接
-router.get('/list', (req: Request, res: Response) => {
+// GET /api/shortlink/list - 获取所有短链接
+router.get('/list', async (req: Request, res: Response) => {
     try {
-        const data = readData()
+        const links = await getAllShortLinks()
         const baseUrl = `${req.protocol}://${req.get('host')}`
 
-        const links = Object.entries(data.links).map(([code, link]) => ({
-            id: code,
-            shortUrl: `${baseUrl}/s/${code}`,
-            originalUrl: link.originalUrl,
+        const formattedLinks = links.map(link => ({
+            id: link.short_code,
+            shortUrl: `${baseUrl}/s/${link.short_code}`,
+            originalUrl: link.original_url,
             clicks: link.clicks,
-            createdAt: link.createdAt
+            createdAt: link.created_at
         }))
 
-        res.json({ links })
+        res.json({ links: formattedLinks })
     } catch (error) {
         console.error('List short links error:', error)
         res.status(500).json({ error: 'Failed to list short links' })
     }
 })
 
-// 删除短链接
-router.delete('/:code', (req: Request, res: Response) => {
+// DELETE /api/shortlink/:code - 删除短链接
+router.delete('/:code', async (req: Request, res: Response) => {
     try {
         const { code } = req.params
-        const data = readData()
 
-        if (!data.links[code]) {
+        const link = await getShortLinkByCode(code)
+        if (!link) {
             return res.status(404).json({ error: 'Short link not found' })
         }
 
-        delete data.links[code]
-        writeData(data)
-
+        await deleteShortLink(link.id)
         res.json({ success: true })
     } catch (error) {
         console.error('Delete short link error:', error)
@@ -165,47 +127,51 @@ router.delete('/:code', (req: Request, res: Response) => {
     }
 })
 
+// GET /s/:code 或 GET /api/shortlink/:code/stats 的处理
 // 短链接跳转
-router.get('/:code', (req: Request, res: Response) => {
+router.get('/:code', async (req: Request, res: Response) => {
     try {
         const { code } = req.params
-        const data = readData()
 
-        const link = data.links[code]
+        // 检查是否是统计请求
+        if (req.path.endsWith('/stats')) {
+            // 统计请求会被下面的路由处理
+            return
+        }
+
+        const link = await getShortLinkByCode(code)
         if (!link) {
             return res.status(404).json({ error: 'Short link not found' })
         }
 
         // 更新点击次数
-        link.clicks++
-        writeData(data)
+        await incrementShortLinkClicks(code)
 
         // 重定向到原始 URL
-        res.redirect(302, link.originalUrl)
+        res.redirect(302, link.original_url)
     } catch (error) {
         console.error('Redirect error:', error)
         res.status(500).json({ error: 'Redirect failed' })
     }
 })
 
-// 获取短链接统计
-router.get('/:code/stats', (req: Request, res: Response) => {
+// GET /api/shortlink/:code/stats - 获取短链接统计
+router.get('/:code/stats', async (req: Request, res: Response) => {
     try {
         const { code } = req.params
-        const data = readData()
 
-        const link = data.links[code]
+        const link = await getShortLinkByCode(code)
         if (!link) {
             return res.status(404).json({ error: 'Short link not found' })
         }
 
         const baseUrl = `${req.protocol}://${req.get('host')}`
         res.json({
-            id: code,
-            shortUrl: `${baseUrl}/s/${code}`,
-            originalUrl: link.originalUrl,
+            id: link.short_code,
+            shortUrl: `${baseUrl}/s/${link.short_code}`,
+            originalUrl: link.original_url,
             clicks: link.clicks,
-            createdAt: link.createdAt
+            createdAt: link.created_at
         })
     } catch (error) {
         console.error('Get stats error:', error)

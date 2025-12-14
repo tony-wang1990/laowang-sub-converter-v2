@@ -1,24 +1,28 @@
 <template>
   <div id="app">
-    <Header />
-    <main>
-      <router-view v-slot="{ Component }">
-        <transition name="page" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
-    </main>
-    <Footer />
+    <router-view v-slot="{ Component }">
+      <transition name="page" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
   </div>
 </template>
 
 <script setup lang="ts">
-import Header from './components/Header.vue'
-import Footer from './components/Footer.vue'
+// Header and Footer removed - Dashboard has its own header
 </script>
 
 <style>
 @import './assets/styles/main.css';
+
+/* App全宽设置 */
+#app {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh;
+}
 
 /* Page Transition */
 .page-enter-active,

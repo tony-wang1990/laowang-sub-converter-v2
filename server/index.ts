@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url'
 import convertRouter from './routes/convert.js'
 import shortlinkRouter from './routes/shortlink.js'
 import subscriptionRouter from './routes/subscriptions.js'
+import qrcodeRouter from './routes/qrcode.js'
+import speedtestRouter from './routes/speedtest.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,6 +26,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use('/api/convert', convertRouter)
 app.use('/api/shortlink', shortlinkRouter)
 app.use('/api/subscriptions', subscriptionRouter)
+app.use('/api/qrcode', qrcodeRouter)
+app.use('/api/speedtest', speedtestRouter)
 app.use('/s', shortlinkRouter)
 
 // Health check

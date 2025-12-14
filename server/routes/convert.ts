@@ -1,10 +1,11 @@
-
 import express, { Request, Response } from 'express'
 import { parseSubscription, addEmoji } from '../utils/parsers.js'
 import { convertToTarget } from '../utils/converters.js'
 import { subscriptionCache } from '../utils/cache.js'
 import { getSubscriptionStats } from '../utils/nodeTest.js'
 import { workerPool } from '../utils/workerManager.js'
+import { smartConvert, parseMultipleUrls } from '../utils/remoteConverter.js'
+import { fetchExternalConfig, applyExternalConfig } from '../utils/configManager.js'
 
 const router = express.Router()
 
@@ -12,8 +13,8 @@ const SUPPORTED_CLIENTS: Record<string, string> = {
     // Clash 系列
     clash: 'clash',
     clashmeta: 'clashmeta',
-    clashverge: 'clash',  // Clash Verge 使用 Clash 格式
-    clashforwindows: 'clash',  // CFW 使用 Clash 格式
+    clashverge: 'clash',
+    clashforwindows: 'clash',
     stash: 'stash',
 
     // Surge 系列
@@ -26,6 +27,7 @@ const SUPPORTED_CLIENTS: Record<string, string> = {
     // V2Ray 系列
     v2rayn: 'v2rayn',
     v2rayng: 'v2rayng',
+    'v2rayn5': 'v2rayn',  // V2RayN 5.x
 
     // Quantumult 系列
     quantumultx: 'quantumultx',
@@ -35,12 +37,15 @@ const SUPPORTED_CLIENTS: Record<string, string> = {
 
     // SingBox 系列
     singbox: 'singbox',
-    nekobox: 'singbox',  // NekoBox 使用 SingBox 格式
+    nekobox: 'singbox',
+    nekoray: 'singbox',
+    'sing-box': 'singbox',
 
     // 新增主流客户端
-    hiddify: 'singbox',  // Hiddify 支持 SingBox 格式
-    karing: 'clash',  // Karing 支持 Clash 格式
-    v2box: 'shadowrocket'  // V2Box 兼容 Shadowrocket 格式
+    hiddify: 'singbox',
+    'hiddify-next': 'singbox',
+    karing: 'clash',
+    v2box: 'shadowrocket'
 }
 
 interface ConvertQuery {
@@ -53,9 +58,13 @@ interface ConvertQuery {
     include?: string;
     exclude?: string;
     rename?: string;
+    mode?: string;
+    tfo?: string;
+    fdn?: string;
+    config?: string;
 }
 
-// 订阅转换接口
+// 订阅转换接口（支持混合模式和多订阅）
 router.get('/', async (req: Request<{}, {}, {}, ConvertQuery>, res: Response) => {
     try {
         const {
@@ -67,7 +76,10 @@ router.get('/', async (req: Request<{}, {}, {}, ConvertQuery>, res: Response) =>
             sort = '0',
             include = '',
             exclude = '',
-            rename = ''
+            rename = '',
+            mode = 'fallback',
+            tfo = '0',
+            fdn = '1'  // 默认开启过滤
         } = req.query
 
         // 参数验证
@@ -82,57 +94,94 @@ router.get('/', async (req: Request<{}, {}, {}, ConvertQuery>, res: Response) =>
             return res.status(400).json({ error: 'Subscription URL is required' })
         }
 
-        // 解码订阅链接
-        const subscriptionUrl = decodeURIComponent(url)
+        // 解析多个订阅URL（支持 | 或换行分隔）
+        const urls = parseMultipleUrls(decodeURIComponent(url))
+        console.log(`Converting ${urls.length} subscription(s) in ${mode} mode`)
 
-        // 生成缓存键
-        // @ts-ignore
-        const cacheKey = subscriptionCache.generateKey(subscriptionUrl)
+        // 本地转换函数
+        const localConvertFn = async (params: any) => {
+            const allContents: string[] = []
 
-        // 尝试从缓存获取
-        // @ts-ignore
-        let rawContent = subscriptionCache.get(cacheKey)
+            // 获取所有订阅内容
+            for (const subscriptionUrl of params.urls) {
+                // @ts-ignore
+                const cacheKey = subscriptionCache.generateKey(subscriptionUrl)
+                // @ts-ignore
+                let rawContent = subscriptionCache.get(cacheKey)
 
-        if (!rawContent) {
-            // 缓存未命中，获取原始订阅内容
-            const response = await fetch(subscriptionUrl, {
-                headers: {
-                    'User-Agent': 'LaoWang-Sub-Converter/1.0'
+                if (!rawContent) {
+                    const response = await fetch(subscriptionUrl, {
+                        headers: { 'User-Agent': 'LaoWang-Sub-Converter/2.0' }
+                    })
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch: ${subscriptionUrl}`)
+                    }
+                    rawContent = await response.text()
+                    // @ts-ignore
+                    subscriptionCache.set(cacheKey, rawContent)
+                }
+                allContents.push(rawContent)
+            }
+
+            // 合并所有订阅内容
+            const mergedContent = allContents.join('\n')
+
+            // 使用 Worker 线程进行处理
+            // @ts-ignore
+            const workerResult = await workerPool.run({
+                content: mergedContent,
+                target: params.target,
+                options: {
+                    include: params.include,
+                    exclude: params.exclude,
+                    sort: params.sort,
+                    rename: params.rename,
+                    emoji: params.emoji,
+                    udp: params.udp,
+                    skipCert: params.skipCert
                 }
             })
 
-            if (!response.ok) {
-                return res.status(502).json({ error: 'Failed to fetch subscription' })
+            if (workerResult.error) {
+                throw new Error(workerResult.error)
             }
 
-            rawContent = await response.text()
-
-            // 存入缓存
-            // @ts-ignore
-            subscriptionCache.set(cacheKey, rawContent)
+            return workerResult.result
         }
 
-        // 使用 Worker 线程进行处理
-        // @ts-ignore
-        const workerResult = await workerPool.run({
-            content: rawContent,
-            target,
-            options: {
-                include,
-                exclude,
-                sort,
-                rename,
-                emoji,
-                udp: udp === '1',
-                skipCert: scert === '1'
+
+        // 使用智能转换
+        let conversionParams = {
+            target: SUPPORTED_CLIENTS[target],
+            urls,
+            emoji: emoji === '1',
+            udp: udp === '1',
+            skipCert: scert === '1',
+            sort: sort === '1',
+            tfo: tfo === '1',
+            include,
+            exclude,
+            rename,
+            mode
+        }
+
+        // 如果提供了外部配置，获取并应用
+        if (config) {
+            try {
+                const externalConfig = await fetchExternalConfig(decodeURIComponent(config))
+                if (externalConfig) {
+                    conversionParams = applyExternalConfig(conversionParams, externalConfig)
+                    console.log('✅ External config applied')
+                }
+            } catch (error: any) {
+                console.warn('Failed to apply external config:', error.message)
+                // 配置加载失败不影响转换，继续使用原参数
             }
-        })
-
-        if (workerResult.error) {
-            throw new Error(workerResult.error)
         }
 
-        const output = workerResult.result
+        const { result: output, source } = await smartConvert(localConvertFn, conversionParams)
+
+        console.log(`✅ Conversion succeeded using ${source} converter`)
 
         // 设置响应头
         const contentTypes: Record<string, string> = {
@@ -161,6 +210,7 @@ router.get('/', async (req: Request<{}, {}, {}, ConvertQuery>, res: Response) =>
 
         res.setHeader('Content-Type', contentTypes[target] || 'text/plain')
         res.setHeader('Content-Disposition', `attachment; filename="config.${extension}"`)
+        res.setHeader('X-Conversion-Source', source)  // 标识转换来源
         res.send(output)
 
     } catch (error: any) {

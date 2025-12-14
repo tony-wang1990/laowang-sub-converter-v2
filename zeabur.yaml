@@ -1,0 +1,39 @@
+# Zeabur部署配置
+# 用于Zeabur平台的部署配置文件
+
+# Zeabur会自动检测这个文件并使用正确的构建配置
+name: laowang-sub-converter
+
+# Node.js版本
+node_version: 18
+
+# 构建命令
+build:
+  install: npm install
+  build: npm run build
+  
+# 启动命令
+start: npm run server
+
+# 环境变量（可在Zeabur控制面板设置）
+env:
+  NODE_ENV: production
+  PORT: 3000
+
+# 健康检查
+health_check:
+  path: /api/health
+  port: 3000
+  timeout: 10s
+  interval: 30s
+
+# 资源配置
+resources:
+  cpu: 0.5
+  memory: 512Mi
+
+# 持久化存储（用于SQLite数据库）
+volumes:
+  - name: data
+    mount_path: /app/data
+    size: 1Gi
