@@ -6,6 +6,8 @@
         "outDir": "./dist-server",
         "rootDir": "./",
         "strict": false,
+        "allowJs": true,
+        "checkJs": false,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
@@ -23,4 +25,3 @@
         "server/tests"
     ]
 }
-```
