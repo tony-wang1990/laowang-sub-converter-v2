@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "preview": "vite preview",
-    "server": "tsx server/index.ts",
-    "start": "npm run build && npm run server",
+    "server": "node dist-server/index.js",
+    "start": "npm run build && npm run build:server && npm run server",
     "docker:build": "docker build -t lw-service .",
     "docker:run": "docker run -p 80:80 lw-service",
     "docker:compose": "docker-compose up -d",
