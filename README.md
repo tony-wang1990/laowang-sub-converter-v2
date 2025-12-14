@@ -40,13 +40,14 @@
 
 ## 📺 界面演示
 
-````carousel
+### 1. 首页预览
 ![v2.0 首页](docs/images/v2_home_demo.png)
-<!-- slide -->
+
+### 2. 高级配置
 ![高级配置](docs/images/v2_options_demo.png)
-<!-- slide -->
+
+### 3. 转换完成
 ![转换结果](docs/images/v2_result_demo.png)
-````
 
 ---
 
