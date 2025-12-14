@@ -1,7 +1,7 @@
 import { parentPort } from 'node:worker_threads'
-import { parseSubscription, addEmoji } from './parsers'
-import { convertToTarget } from './converters'
-import { ProxyNode } from '../types'
+import { parseSubscription, addEmoji } from './parsers.js'
+import { convertToTarget } from './converters.js'
+import type { ProxyNode } from '../types/index.js'
 
 // Simple logging helper for worker
 const log = (msg: string) => {

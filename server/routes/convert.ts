@@ -79,7 +79,8 @@ router.get('/', async (req: Request<{}, {}, {}, ConvertQuery>, res: Response) =>
             rename = '',
             mode = 'fallback',
             tfo = '0',
-            fdn = '1'  // 默认开启过滤
+            fdn = '1',  // 默认开启过滤
+            config
         } = req.query
 
         // 参数验证
