@@ -9,8 +9,8 @@ WORKDIR /app
 # 复制package文件
 COPY package*.json ./
 
-# 安装依赖（兼容有无lockfile）
-RUN npm install --omit=dev
+# 安装所有依赖（包括devDependencies，构建需要）
+RUN npm install
 
 # 复制源代码
 COPY . .
@@ -23,9 +23,13 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# 复制package文件
+COPY package*.json ./
+
+# 只安装生产依赖
+RUN npm install --omit=dev
+
 # 只复制必要文件
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
 
