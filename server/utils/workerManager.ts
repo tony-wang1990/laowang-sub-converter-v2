@@ -60,9 +60,7 @@ class WorkerPool {
         // Actually, if I renamed `worker.js` to `worker.ts`, `worker.js` no longer exists on disk.
         // So I MUST change the path to `worker.ts`.
 
-        const worker = new Worker(path.join(__dirname, 'worker.ts'), {
-            execArgv: ['--import', 'tsx/esm']
-        }) as CustomWorker
+        const worker = new Worker(path.join(__dirname, 'worker.ts')) as CustomWorker
 
         worker.on('message', (msg) => {
             const { id, result, error } = msg

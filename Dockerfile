@@ -50,7 +50,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 # Create startup script
 RUN echo '#!/bin/sh' > /app/start.sh && \
   echo 'sed -i "s/backend:3000/127.0.0.1:3000/g" /etc/nginx/http.d/default.conf' >> /app/start.sh && \
-  echo 'npx tsx server/index.ts &' >> /app/start.sh && \
+  echo 'node --import tsx/esm server/index.ts &' >> /app/start.sh && \
   echo 'nginx -g "daemon off;"' >> /app/start.sh && \
   chmod +x /app/start.sh
 
