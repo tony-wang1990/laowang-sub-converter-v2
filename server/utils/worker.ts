@@ -1,7 +1,15 @@
 import { parentPort } from 'node:worker_threads'
 import { parseSubscription, addEmoji } from './parsers.js'
 import { convertToTarget } from './converters.js'
-import type { ProxyNode } from '../types/index.js'
+
+// Define ProxyNode type inline to avoid import issues
+interface ProxyNode {
+    type: string
+    name: string
+    server: string
+    port: number | string
+    [key: string]: any
+}
 
 // Simple logging helper for worker
 const log = (msg: string) => {
