@@ -1,11 +1,11 @@
 {
-    "name": "laowang-sub-converter",
+    "name": "lw-service",
     "template": "DOCKERFILE",
     "services": [
         {
             "name": "web",
             "git": {
-                "repo": "tony-wang1990/laowang-sub-converter"
+                "repo": "tony-wang1990/laowang-sub-converter-v2"
             },
             "env": {
                 "NODE_ENV": "production",

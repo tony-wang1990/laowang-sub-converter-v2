@@ -1,7 +1,7 @@
 {
-  "name": "laowang-sub-converter",
-  "version": "1.0.0",
-  "description": "LaoWang Sub-converter - 专业的代理订阅转换服务",
+  "name": "lw-service",
+  "version": "2.0.0",
+  "description": "LaoWang Service - Config Management Tool",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,20 +9,17 @@
     "preview": "vite preview",
     "server": "tsx server/index.ts",
     "start": "npm run build && npm run server",
-    "docker:build": "docker build -t laowang-sub-converter .",
-    "docker:run": "docker run -p 80:80 laowang-sub-converter",
+    "docker:build": "docker build -t lw-service .",
+    "docker:run": "docker run -p 80:80 lw-service",
     "docker:compose": "docker-compose up -d",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev:server": "tsx watch server/index.ts"
   },
   "keywords": [
-    "subscription",
-    "converter",
-    "clash",
-    "surge",
-    "shadowrocket",
-    "v2ray",
-    "proxy"
+    "config",
+    "management",
+    "tool",
+    "utility"
   ],
   "author": "LaoWang",
   "license": "MIT",
