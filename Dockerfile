@@ -1,4 +1,4 @@
-# Build stage
+# Multi-stage build for optimal image size
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -6,29 +6,52 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies (including devDependencies for build)
 RUN npm ci
 
 # Copy source code
 COPY . .
 
-# Build the app
+# Build the frontend
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
+# Install only production dependencies for server
+RUN npm ci --only=production
 
-# Copy custom nginx config
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+# Production stage - Nginx for frontend + Node for backend
+FROM node:20-alpine
 
-# Copy built files
+# Install nginx
+RUN apk add --no-cache nginx
+
+WORKDIR /app
+
+# Copy built frontend files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port
-EXPOSE 80
+# Copy server files and production dependencies
+COPY --from=builder /app/server ./server
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+
+# Create nginx directories
+RUN mkdir -p /run/nginx
+
+# Expose ports (80 for nginx, 3000 for API)
+EXPOSE 80 3000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
-CMD ["nginx", "-g", "daemon off;"]
+# Create startup script
+RUN echo '#!/bin/sh' > /app/start.sh && \
+  echo 'sed -i "s/backend:3000/127.0.0.1:3000/g" /etc/nginx/http.d/default.conf' >> /app/start.sh && \
+  echo 'npx tsx server/index.ts &' >> /app/start.sh && \
+  echo 'nginx -g "daemon off;"' >> /app/start.sh && \
+  chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]

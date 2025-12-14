@@ -1,11 +1,13 @@
-import { createI18n } from 'vue-i18n'
+
+import { createI18n, type I18n } from 'vue-i18n'
 import zhCN from './zh-CN.json'
 import enUS from './en-US.json'
 import ruRU from './ru-RU.json'
 import faIR from './fa-IR.json'
 
 // 检测浏览器语言
-function getDefaultLocale() {
+function getDefaultLocale(): string {
+  // @ts-ignore
   const browserLang = navigator.language || navigator.userLanguage
   if (browserLang.startsWith('zh')) return 'zh-CN'
   if (browserLang.startsWith('ru')) return 'ru-RU'
@@ -14,11 +16,11 @@ function getDefaultLocale() {
 }
 
 // 从 localStorage 获取保存的语言
-function getSavedLocale() {
+function getSavedLocale(): string {
   return localStorage.getItem('laowang-locale') || getDefaultLocale()
 }
 
-const i18n = createI18n({
+const i18n: I18n = createI18n({
   legacy: false,
   locale: getSavedLocale(),
   fallbackLocale: 'en-US',
@@ -31,10 +33,11 @@ const i18n = createI18n({
 })
 
 // 切换语言并保存
-export function setLocale(locale) {
+export function setLocale(locale: string) {
+  // @ts-ignore
   i18n.global.locale.value = locale
   localStorage.setItem('laowang-locale', locale)
-  
+
   // 处理 RTL 语言
   if (locale === 'fa-IR') {
     document.documentElement.setAttribute('dir', 'rtl')

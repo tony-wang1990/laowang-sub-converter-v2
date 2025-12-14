@@ -78,15 +78,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
+
+interface ShortLink {
+  id: string;
+  shortUrl: string;
+  originalUrl: string;
+  clicks: number;
+  createdAt: Date;
+}
 
 const originalUrl = ref('')
 const newShortLink = ref('')
 const loading = ref(false)
 
 // 模拟短链接数据
-const shortLinks = reactive([
+const shortLinks = reactive<ShortLink[]>([
   {
     id: '1',
     shortUrl: 'https://lw.to/abc123',
@@ -129,30 +137,30 @@ const createShortLink = async () => {
   }
 }
 
-const copyLink = async (url) => {
+const copyLink = async (url: string) => {
   try {
     await navigator.clipboard.writeText(url)
     // 可以添加 toast 提示
-  } catch (err) {
+  } catch (err: any) {
     console.error('Copy failed:', err)
   }
 }
 
 const copyNewLink = () => copyLink(newShortLink.value)
 
-const deleteLink = (id) => {
+const deleteLink = (id: string) => {
   const index = shortLinks.findIndex(l => l.id === id)
   if (index > -1) {
     shortLinks.splice(index, 1)
   }
 }
 
-const truncateUrl = (url, maxLength = 40) => {
+const truncateUrl = (url: string, maxLength = 40) => {
   if (url.length <= maxLength) return url
   return url.substring(0, maxLength) + '...'
 }
 
-const formatDate = (date) => {
+const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',

@@ -34,21 +34,20 @@
   </div>
 </template>
 
-<script setup>
-import { ref, watch, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, watch } from 'vue'
 import QRCode from 'qrcode'
 
-const props = defineProps({
-  result: {
-    type: String,
-    default: ''
-  }
+const props = withDefaults(defineProps<{
+  result?: string
+}>(), {
+  result: ''
 })
 
 const copied = ref(false)
 const showQR = ref(false)
-const urlInput = ref(null)
-const qrCanvas = ref(null)
+const urlInput = ref<HTMLInputElement | null>(null)
+const qrCanvas = ref<HTMLCanvasElement | null>(null)
 
 const copyLink = async () => {
   try {
@@ -91,7 +90,7 @@ watch(showQR, (val) => {
   }
 })
 
-const generateQR = async (text) => {
+const generateQR = async (text: string) => {
   if (!qrCanvas.value) return
   
   try {

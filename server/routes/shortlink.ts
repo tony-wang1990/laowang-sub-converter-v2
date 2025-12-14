@@ -1,4 +1,5 @@
-import express from 'express'
+
+import express, { Request, Response } from 'express'
 import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
@@ -13,6 +14,16 @@ const __dirname = path.dirname(__filename)
 // 数据存储路径
 const DATA_FILE = path.join(__dirname, '../data/shortlinks.json')
 
+interface ShortLink {
+    originalUrl: string;
+    createdAt: string;
+    clicks: number;
+}
+
+interface LinkData {
+    links: Record<string, ShortLink>;
+}
+
 // 确保数据目录存在
 function ensureDataDir() {
     const dir = path.dirname(DATA_FILE)
@@ -25,7 +36,7 @@ function ensureDataDir() {
 }
 
 // 读取数据
-function readData() {
+function readData(): LinkData {
     ensureDataDir()
     try {
         return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'))
@@ -35,7 +46,7 @@ function readData() {
 }
 
 // 写入数据
-function writeData(data) {
+function writeData(data: LinkData) {
     ensureDataDir()
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2))
 }
@@ -52,7 +63,7 @@ function generateShortCode(length = 6) {
 }
 
 // 创建短链接
-router.post('/', (req, res) => {
+router.post('/', (req: Request, res: Response) => {
     try {
         const { url } = req.body
 
@@ -84,7 +95,7 @@ router.post('/', (req, res) => {
         }
 
         // 生成新短码
-        let shortCode
+        let shortCode: string
         do {
             shortCode = generateShortCode()
         } while (data.links[shortCode])
@@ -114,7 +125,7 @@ router.post('/', (req, res) => {
 })
 
 // 获取所有短链接
-router.get('/list', (req, res) => {
+router.get('/list', (req: Request, res: Response) => {
     try {
         const data = readData()
         const baseUrl = `${req.protocol}://${req.get('host')}`
@@ -135,7 +146,7 @@ router.get('/list', (req, res) => {
 })
 
 // 删除短链接
-router.delete('/:code', (req, res) => {
+router.delete('/:code', (req: Request, res: Response) => {
     try {
         const { code } = req.params
         const data = readData()
@@ -155,7 +166,7 @@ router.delete('/:code', (req, res) => {
 })
 
 // 短链接跳转
-router.get('/:code', (req, res) => {
+router.get('/:code', (req: Request, res: Response) => {
     try {
         const { code } = req.params
         const data = readData()
@@ -178,7 +189,7 @@ router.get('/:code', (req, res) => {
 })
 
 // 获取短链接统计
-router.get('/:code/stats', (req, res) => {
+router.get('/:code/stats', (req: Request, res: Response) => {
     try {
         const { code } = req.params
         const data = readData()

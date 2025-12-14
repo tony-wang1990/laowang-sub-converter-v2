@@ -20,28 +20,33 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
+<script setup lang="ts">
+const props = defineProps({
   modelValue: {
     type: String,
     default: ''
   }
 })
 
-defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 
 const clients = [
   { id: 'clash', name: 'Clash', platform: '全平台', icon: '🔥' },
   { id: 'clashmeta', name: 'Clash Meta', platform: '全平台', icon: '⚡' },
+  { id: 'clashverge', name: 'Clash Verge', platform: 'PC/Mac', icon: '🖥️' },
+  { id: 'karing', name: 'Karing', platform: 'iOS/Android', icon: '🐿️' },
+  { id: 'singbox', name: 'sing-box', platform: '全平台', icon: '📦' },
+  { id: 'nekobox', name: 'NekoBox', platform: 'Android/PC', icon: '🐱' },
+  { id: 'hiddify', name: 'Hiddify', platform: '全平台', icon: '🦋' },
   { id: 'surge', name: 'Surge', platform: 'iOS/macOS', icon: '🌊' },
   { id: 'quantumultx', name: 'Quantumult X', platform: 'iOS', icon: '🔮' },
   { id: 'shadowrocket', name: 'Shadowrocket', platform: 'iOS', icon: '🚀' },
   { id: 'loon', name: 'Loon', platform: 'iOS', icon: '🎈' },
+  { id: 'stash', name: 'Stash', platform: 'iOS/macOS', icon: '📦' },
   { id: 'v2rayn', name: 'V2RayN', platform: 'Windows', icon: '💻' },
   { id: 'v2rayng', name: 'V2RayNG', platform: 'Android', icon: '📱' },
-  { id: 'surfboard', name: 'Surfboard', platform: 'Android', icon: '🏄' },
-  { id: 'stash', name: 'Stash', platform: 'iOS/macOS', icon: '📦' },
-  { id: 'singbox', name: 'sing-box', platform: '全平台', icon: '📦' }
+  { id: 'v2box', name: 'V2Box', platform: 'iOS', icon: '📦' },
+  { id: 'surfboard', name: 'Surfboard', platform: 'Android', icon: '🏄' }
 ]
 </script>
 

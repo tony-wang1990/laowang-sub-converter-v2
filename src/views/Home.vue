@@ -117,8 +117,13 @@
   </div>
 </template>
 
-<script setup>
-const supportedClients = [
+<script setup lang="ts">
+interface Client {
+  name: string;
+  icon: string;
+}
+
+const supportedClients: Client[] = [
   { name: 'Clash', icon: '🔥' },
   { name: 'Clash Meta', icon: '⚡' },
   { name: 'Surge', icon: '🌊' },

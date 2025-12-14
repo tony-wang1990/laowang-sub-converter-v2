@@ -1,3 +1,7 @@
+<script setup lang="ts">
+// Static page
+</script>
+
 <template>
   <div class="about-page">
     <div class="container">

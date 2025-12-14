@@ -82,10 +82,24 @@
     },
     "common": {
         "loading": "Loading...",
+        "processing": "Processing...",
         "error": "An error occurred",
         "success": "Success",
         "confirm": "Confirm",
         "cancel": "Cancel",
         "close": "Close"
+    },
+    "subs": {
+        "title": "My Subscriptions",
+        "add": "Add New",
+        "empty": "No saved subscriptions yet",
+        "use": "Use",
+        "delete": "Delete",
+        "addTitle": "Add Subscription",
+        "nameLabel": "Name",
+        "namePlaceholder": "e.g., My Provider",
+        "urlLabel": "URL",
+        "urlPlaceholder": "Paste subscription URL",
+        "save": "Save"
     }
 }

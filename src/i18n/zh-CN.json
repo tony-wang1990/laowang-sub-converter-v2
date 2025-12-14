@@ -82,10 +82,24 @@
     },
     "common": {
         "loading": "加载中...",
+        "processing": "处理中...",
         "error": "发生错误",
         "success": "操作成功",
         "confirm": "确认",
         "cancel": "取消",
         "close": "关闭"
+    },
+    "subs": {
+        "title": "订阅管理",
+        "add": "添加订阅",
+        "empty": "暂无保存的订阅，点击上方按钮添加",
+        "use": "使用",
+        "delete": "删除",
+        "addTitle": "添加新订阅",
+        "nameLabel": "名称",
+        "namePlaceholder": "例如: 我的机场",
+        "urlLabel": "订阅链接",
+        "urlPlaceholder": "粘贴订阅链接 (https://...)",
+        "save": "保存"
     }
 }

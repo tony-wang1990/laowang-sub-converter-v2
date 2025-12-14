@@ -1,3 +1,7 @@
+<script setup lang="ts">
+// Static footer
+</script>
+
 <template>
   <footer class="footer">
     <div class="container footer-container">

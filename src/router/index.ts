@@ -1,6 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
 
-const routes = [
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+
+// 懒加载路由组件
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'Home',
@@ -24,15 +26,8 @@ const routes = [
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition
-        } else {
-            return { top: 0 }
-        }
-    }
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes
 })
 
 export default router

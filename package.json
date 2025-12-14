@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "node server/index.js",
+    "server": "tsx server/index.ts",
     "start": "npm run build && npm run server",
     "docker:build": "docker build -t laowang-sub-converter .",
     "docker:run": "docker run -p 80:80 laowang-sub-converter",
-    "docker:compose": "docker-compose up -d"
+    "docker:compose": "docker-compose up -d",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "dev:server": "tsx watch server/index.ts"
   },
   "keywords": [
     "subscription",
@@ -31,14 +33,30 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "js-yaml": "^4.1.0",
     "qrcode": "^1.5.3",
+    "sqlite3": "^5.1.7",
+    "tsx": "^4.21.0",
     "vue": "^3.4.0",
     "vue-i18n": "^9.9.0",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.0.2",
+    "@types/qrcode": "^1.5.6",
+    "@types/sqlite3": "^3.1.11",
     "@vitejs/plugin-vue": "^5.0.0",
-    "vite": "^6.0.0"
+    "@vue/tsconfig": "^0.8.1",
+    "jest": "^30.2.0",
+    "terser": "^5.44.1",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3",
+    "vite": "^6.0.0",
+    "vue-tsc": "^3.1.8"
   },
   "engines": {
     "node": ">=18.0.0"

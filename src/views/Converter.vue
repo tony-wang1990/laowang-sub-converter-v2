@@ -9,6 +9,9 @@
       </div>
 
       <div class="converter-form glass-card">
+        <!-- 订阅管理 -->
+        <SubscriptionManager @select="(url) => subscriptionUrl = url" />
+
         <!-- 订阅链接输入 -->
         <div class="form-group">
           <label class="form-label">{{ $t('converter.inputLabel') }}</label>
@@ -53,15 +56,16 @@
   </div>
 </template>
 
-<script setup>
-import { ref, reactive } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import ClientSelector from '../components/ClientSelector.vue'
 import AdvancedOptions from '../components/AdvancedOptions.vue'
 import ResultPanel from '../components/ResultPanel.vue'
+import SubscriptionManager from '../components/SubscriptionManager.vue'
 
 const subscriptionUrl = ref('')
 const selectedClient = ref('')
-const advancedOptions = reactive({
+const advancedOptions = ref({
   emoji: true,
   udp: true,
   skipCert: false,
@@ -87,18 +91,18 @@ const convertSubscription = async () => {
     const params = new URLSearchParams({
       target: selectedClient.value,
       url: subscriptionUrl.value,
-      emoji: advancedOptions.emoji ? '1' : '0',
-      udp: advancedOptions.udp ? '1' : '0',
-      scert: advancedOptions.skipCert ? '1' : '0',
-      sort: advancedOptions.sort ? '1' : '0'
+      emoji: advancedOptions.value.emoji ? '1' : '0',
+      udp: advancedOptions.value.udp ? '1' : '0',
+      scert: advancedOptions.value.skipCert ? '1' : '0',
+      sort: advancedOptions.value.sort ? '1' : '0'
     })
 
-    if (advancedOptions.filter) {
-      params.append('include', advancedOptions.filter)
+    if (advancedOptions.value.filter) {
+      params.append('include', advancedOptions.value.filter)
     }
 
-    if (advancedOptions.rename) {
-      params.append('rename', advancedOptions.rename)
+    if (advancedOptions.value.rename) {
+      params.append('rename', advancedOptions.value.rename)
     }
 
     // 生成转换后的链接
@@ -108,7 +112,8 @@ const convertSubscription = async () => {
     await new Promise(resolve => setTimeout(resolve, 500))
 
   } catch (err) {
-    error.value = err.message || '转换失败，请稍后重试'
+    const message = err instanceof Error ? err.message : String(err)
+    error.value = message || '转换失败，请稍后重试'
   } finally {
     loading.value = false
   }
@@ -119,12 +124,14 @@ const resetForm = () => {
   selectedClient.value = ''
   convertedUrl.value = ''
   error.value = ''
-  advancedOptions.emoji = true
-  advancedOptions.udp = true
-  advancedOptions.skipCert = false
-  advancedOptions.sort = false
-  advancedOptions.filter = ''
-  advancedOptions.rename = ''
+  advancedOptions.value = {
+    emoji: true,
+    udp: true,
+    skipCert: false,
+    sort: false,
+    filter: '',
+    rename: ''
+  }
 }
 </script>
 

@@ -24,10 +24,25 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 
-const themes = [
+interface ThemeColors {
+  primary: string;
+  secondary: string;
+  tertiary: string;
+  accentCyan: string;
+  accentPurple: string;
+}
+
+interface Theme {
+  id: string;
+  name: string;
+  icon: string;
+  colors: ThemeColors;
+}
+
+const themes: Theme[] = [
   { id: 'default', name: '深邃蓝', icon: '🌌', colors: {
     primary: '#0a0a0f', secondary: '#12121a', tertiary: '#1a1a2e',
     accentCyan: '#00d4ff', accentPurple: '#7b2cbf'
@@ -73,7 +88,7 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
-const setTheme = (themeId) => {
+const setTheme = (themeId: string) => {
   currentThemeId.value = themeId
   const theme = themes.find(t => t.id === themeId)
   if (theme) {
@@ -83,7 +98,7 @@ const setTheme = (themeId) => {
   isOpen.value = false
 }
 
-const applyTheme = (colors) => {
+const applyTheme = (colors: ThemeColors) => {
   const root = document.documentElement
   root.style.setProperty('--color-bg-primary', colors.primary)
   root.style.setProperty('--color-bg-secondary', colors.secondary)
@@ -96,7 +111,7 @@ const applyTheme = (colors) => {
   root.style.setProperty('--shadow-glow-cyan', `0 0 30px ${colors.accentCyan}40`)
 }
 
-const hexToRgb = (hex) => {
+const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result 
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
@@ -104,8 +119,9 @@ const hexToRgb = (hex) => {
 }
 
 // 点击外部关闭
-const handleClickOutside = (e) => {
-  if (!e.target.closest('.theme-switcher')) {
+const handleClickOutside = (e: Event) => {
+  const target = e.target as HTMLElement
+  if (!target.closest('.theme-switcher')) {
     isOpen.value = false
   }
 }

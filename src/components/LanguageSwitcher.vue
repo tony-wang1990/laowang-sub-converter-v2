@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { setLocale, availableLocales } from '../i18n'
@@ -41,14 +41,15 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
-const changeLocale = (code) => {
+const changeLocale = (code: string) => {
   setLocale(code)
   isOpen.value = false
 }
 
 // 点击外部关闭
-const handleClickOutside = (e) => {
-  if (!e.target.closest('.language-switcher')) {
+const handleClickOutside = (e: Event) => {
+  const target = e.target as HTMLElement
+  if (!target.closest('.language-switcher')) {
     isOpen.value = false
   }
 }
