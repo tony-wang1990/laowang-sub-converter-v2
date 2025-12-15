@@ -1,49 +1,51 @@
 # Dockerfile for production deployment
-# 支持 Zeabur, VPS, 和其他容器平�?
+# Support Zeabur, VPS, and other container platforms
 
 FROM node:18-alpine AS builder
 
-# 设置工作目录
+# Set working directory
 WORKDIR /app
 
-# 复制package和tsconfig文件
+# Copy package and tsconfig files
 COPY package*.json ./
 COPY tsconfig*.json ./
 
-# 安装所有依赖（包括devDependencies，构建需要）
+# Install all dependencies (including devDependencies for build)
 RUN npm install
 
-# 复制源代�?
+# Copy source code
 COPY . .
 
-# 构建前端和编译后�?
+# Build frontend and compile backend
 RUN npm run build && npm run build:server
 
-# 生产环境镜像
+# Production image
 FROM node:18-alpine
 
 WORKDIR /app
 
-# 复制package文件
+# Copy package files
 COPY package*.json ./
 
-# 只安装生产依�?
+# Install production dependencies only
 RUN npm install --omit=dev
 
-# 复制构建好的文件
+# Copy built files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/dist-server ./dist-server
 
-# 创建数据目录
+# Create data directory
 RUN mkdir -p /app/data
 
-# 暴露端口
-EXPOSE 3000
+# Set port environment variable
+ENV PORT=80
 
-# 健康检�?
+# Expose port
+EXPOSE 80
+
+# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+    CMD node -e "require('http').get('http://localhost:80/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# 运行编译后的JavaScript
+# Run compiled JavaScript
 CMD ["node", "dist-server/index.js"]
-

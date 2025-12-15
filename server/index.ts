@@ -37,10 +37,22 @@ app.get('/health', (req: Request, res: Response) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../dist')))
+    const distPath = path.join(__dirname, '../dist')
+    console.log('📁 Serving static files from:', distPath)
 
+    // Serve static assets (CSS, JS, images, etc.)
+    app.use(express.static(distPath))
+
+    // Explicit root handler for debugging
+    app.get('/', (req: Request, res: Response) => {
+        console.log('🏠 Serving root index.html')
+        res.sendFile(path.join(distPath, 'index.html'))
+    })
+
+    // Catch-all route for SPA - must be last
     app.get('*', (req: Request, res: Response) => {
-        res.sendFile(path.join(__dirname, '../dist/index.html'))
+        console.log(`🔀 Catch-all route hit: ${req.url}`)
+        res.sendFile(path.join(distPath, 'index.html'))
     })
 }
 
