@@ -1,6 +1,8 @@
 {
     "name": "lw-service",
     "template": "DOCKERFILE",
+    "buildCommand": "docker build -t lw-service .",
+    "dockerfile": "./Dockerfile",
     "services": [
         {
             "name": "web",
