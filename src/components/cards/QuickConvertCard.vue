@@ -2,22 +2,22 @@
   <div class="quick-convert-card card animate-slide-in">
     <div class="card-header">
       <h3 class="card-title">⚡ 快速转换</h3>
-      <span class="card-badge">支持19+客户端</span>
+      <span class="card-badge">支持25+客户端</span>
     </div>
 
     <div class="card-body">
       <!-- 订阅URL输入 -->
       <div class="form-group">
-        <label class="form-label">订阅链接 (支持多个，用 | 或换行分隔)</label>
+        <label class="form-label">订阅链接 / 单节点链接 (支持多个，用 | 或换行分隔)</label>
         <textarea
           v-model="subscriptionUrl"
           class="input textarea"
-          placeholder="https://example.com/sub1
-https://example.com/sub2"
-          rows="3"
+          placeholder="支持机场订阅和单节点 (vless, vmess, ss, ssr, trojan, hysteria 等)
+示例: https://example.com/sub"
+          rows="4"
         />
         <div v-if="urlCount > 1" class="hint">
-          <span>✅ 检测到 {{ urlCount }} 个订阅，将自动合并</span>
+          <span>✅ 检测到 {{ urlCount }} 个订阅/节点，将自动合并</span>
         </div>
       </div>
 
@@ -120,7 +120,7 @@ https://example.com/sub2"
 import { ref, computed } from 'vue'
 
 const subscriptionUrl = ref('')
-const selectedClient = ref('clash')
+const selectedClient = ref('')
 const showAdvanced = ref(false)
 const loading = ref(false)
 const result = ref('')
@@ -137,17 +137,53 @@ const options = ref({
 })
 
 const clients = [
+  // Cross-platform / Popular
   { value: 'clash', label: 'Clash', icon: '⚔️' },
   { value: 'singbox', label: 'sing-box', icon: '📦' },
   { value: 'surge', label: 'Surge', icon: '🌊' },
+  
+  // Windows
   { value: 'v2rayn', label: 'V2RayN', icon: '✈️' },
+  { value: 'clashverge', label: 'Clash Verge', icon: '🔷' },
+  { value: 'clashmeta', label: 'Clash Meta', icon: '⚡' },
+  
+  // iOS
   { value: 'shadowrocket', label: 'Shadowrocket', icon: '🚀' },
-  { value: 'quantumultx', label: 'QuantumultX', icon: '🔷' },
+  { value: 'quantumultx', label: 'QuantumultX', icon: '🔶' },
+  { value: 'loon', label: 'Loon', icon: '🎈' },
+  { value: 'stash', label: 'Stash', icon: '📱' },
+  
+  // Android
+  { value: 'v2rayng', label: 'v2rayNG', icon: '🤖' },
+  { value: 'clashforandroid', label: 'Clash Android', icon: '📱' },
+  { value: 'surfboard', label: 'Surfboard', icon: '🏄' },
+  { value: 'sagernet', label: 'SagerNet', icon: '🔐' },
+  
+  // macOS
+  { value: 'clashx', label: 'ClashX', icon: '🍎' },
+  { value: 'v2rayx', label: 'V2RayX', icon: '✨' },
+  
+  // Others
+  { value: 'shadowsocks', label: 'SS/SSR', icon: '🔒' },
+  { value: 'trojan', label: 'Trojan', icon: '🐴' },
+  { value: 'mixed', label: 'Mixed', icon: '🎯' },
 ]
 
 const urlCount = computed(() => {
-  const urls = subscriptionUrl.value.split(/[\n|]/).filter(u => u.trim().startsWith('http'))
-  return urls.length
+  const lines = subscriptionUrl.value.split(/[\n|]/).filter(l => l.trim())
+  // Count both HTTP(S) URLs and protocol-specific node links
+  const count = lines.filter(l => {
+    const trimmed = l.trim()
+    return trimmed.startsWith('http') || 
+           trimmed.startsWith('vless://') ||
+           trimmed.startsWith('vmess://') ||
+           trimmed.startsWith('ss://') ||
+           trimmed.startsWith('ssr://') ||
+           trimmed.startsWith('trojan://') ||
+           trimmed.startsWith('hysteria://') ||
+           trimmed.startsWith('hysteria2://')
+  }).length
+  return count
 })
 
 async function convert() {
@@ -268,6 +304,10 @@ async function downloadQR() {
   margin-bottom: var(--spacing-md);
 }
 
+.form-group:has(.btn-expand) {
+  margin-top: 24px;
+}
+
 .form-label {
   display: block;
   margin-bottom: var(--spacing-sm);
@@ -290,41 +330,52 @@ async function downloadQR() {
 
 .client-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: var(--spacing-sm);
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-md);
 }
 
 .client-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 12px;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
+  gap: 8px;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(226, 232, 240, 1);
+  border-radius: 12px;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all 0.3s ease;
+  color: #1e293b;
+  min-height: 90px;
 }
 
 .client-btn:hover {
-  background: var(--bg-card);
-  border-color: var(--border-glow);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #6366f1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 }
 
 .client-btn.active {
-  background: var(--primary-gradient);
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   border-color: transparent;
   color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
 }
 
 .client-icon {
-  font-size: 24px;
+  font-size: 32px;
+  line-height: 1;
 }
 
 .client-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  width: 100%;
+  color: inherit;
 }
 
 .btn-expand {
@@ -347,17 +398,18 @@ async function downloadQR() {
 }
 
 .advanced-options {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  margin-top: 20px;
+  padding: 24px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .options-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 640px) {
@@ -369,9 +421,25 @@ async function downloadQR() {
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 10px;
   cursor: pointer;
   font-size: 14px;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 1);
+  transition: all 0.2s ease;
+}
+
+.checkbox-label:hover {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.02);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
 
 .result-panel {

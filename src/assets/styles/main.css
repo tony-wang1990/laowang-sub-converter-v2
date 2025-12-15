@@ -266,3 +266,67 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
+
+/* 工具卡片按钮对齐 */
+.three-col-grid .shortlink-card,
+.three-col-grid .qrcode-card,
+.three-col-grid .batch-convert-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.three-col-grid .shortlink-card .card-body,
+.three-col-grid .qrcode-card .card-body,
+.three-col-grid .batch-convert-card .card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.three-col-grid .shortlink-card .btn-primary,
+.three-col-grid .qrcode-card .btn-primary,
+.three-col-grid .batch-convert-card .btn-primary {
+  margin-top: auto !important;
+}
+
+/* 工具卡片输入框大小 */
+.three-col-grid .form-group {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin-bottom: 0 !important;
+}
+
+.three-col-grid .form-group .input,
+.three-col-grid .form-group .textarea {
+  flex: 1 !important;
+  min-height: 100px !important;
+}
+
+/* 短链接卡片 - 和二维码卡片一样布局 */
+.three-col-grid .shortlink-card .form-group {
+  flex: 1 !important;
+}
+
+.three-col-grid .shortlink-card .form-group .textarea {
+  flex: 1 !important;
+  min-height: 100px !important;
+}
+
+.three-col-grid .shortlink-card .card-body {
+  justify-content: space-between !important;
+}
+
+/* 批量转换卡片 - 选择器不要太高 */
+.three-col-grid .batch-convert-card .form-group:last-of-type {
+  flex: 0 !important;
+}
+
+.three-col-grid .batch-convert-card select.input {
+  height: auto !important;
+  min-height: auto !important;
+  flex: 0 !important;
+  padding: 12px 18px !important;
+}

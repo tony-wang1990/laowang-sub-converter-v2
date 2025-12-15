@@ -1,13 +1,14 @@
 <template>
   <div class="subscription-manage-card card animate-slide-in delay-100">
-    <div class="card-header">
+    <div class="card-content">
       <h3 class="card-title">📋 订阅管理</h3>
-      <button class="btn btn-primary btn-sm" @click="showAdd = true">
-        + 添加订阅
-      </button>
-    </div>
+      
+      <div class="action-row">
+        <button class="btn btn-primary btn-sm" @click="showAdd = true">
+          + 添加订阅
+        </button>
+      </div>
 
-    <div class="card-body">
       <div v-if="loading" class="loading">
         <span class="animate-spin">⚙️</span>
         <span>加载中...</span>
@@ -15,7 +16,8 @@
 
       <div v-else-if="subscriptions.length === 0" class="empty-state">
         <span class="empty-icon">📭</span>
-        <p>还没有订阅，点击上方按钮添加</p>
+        <p class="empty-text">还没有订阅</p>
+        <p class="empty-hint">点击上方按钮添加</p>
       </div>
 
       <div v-else class="subscription-list">
@@ -125,36 +127,75 @@ function closeModal() {
 </script>
 
 <style scoped>
+.card-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  min-height: 280px;
+}
+
+.card-title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  text-align: center;
+  width: 100%;
+}
+
+.action-row {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
 .btn-sm {
-  padding: 6px 12px;
-  font-size: 12px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .loading {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-xl);
+  gap: 12px;
+  flex: 1;
   color: var(--text-muted);
 }
 
 .empty-state {
   text-align: center;
-  padding: var(--spacing-xl);
-  color: var(--text-muted);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .empty-icon {
   font-size: 48px;
-  display: block;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
 }
 
 .subscription-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 12px;
+  width: 100%;
 }
 
 .sub-item {

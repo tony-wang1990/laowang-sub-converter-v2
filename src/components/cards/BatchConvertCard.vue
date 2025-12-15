@@ -11,7 +11,7 @@
           v-model="urls"
           class="input textarea"
           placeholder="https://example.com/sub1&#10;https://example.com/sub2"
-          rows="4"
+          rows="6"
         />
       </div>
 

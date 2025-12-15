@@ -11,7 +11,7 @@
           v-model="text"
           class="input textarea"
           placeholder="输入要生成二维码的文本或链接"
-          rows="3"
+          rows="6"
         />
       </div>
 

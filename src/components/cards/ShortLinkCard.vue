@@ -7,11 +7,11 @@
     <div class="card-body">
       <div class="form-group">
         <label class="form-label">长链接</label>
-        <input
+        <textarea
           v-model="longUrl"
-          class="input"
+          class="input textarea"
           placeholder="https://example.com/very/long/url"
-          @keyup.enter="createShortLink"
+          rows="6"
         />
       </div>
 
@@ -84,6 +84,11 @@ function copyShortLink() {
 </script>
 
 <style scoped>
+.large-input {
+  padding: 20px 18px !important;
+  min-height: 60px;
+}
+
 .result {
   margin-top: var(--spacing-md);
   padding: var(--spacing-md);

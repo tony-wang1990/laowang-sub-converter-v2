@@ -12,10 +12,7 @@
       <div class="header-wrapper">
         <div class="brand">
           <div class="brand-icon">⚡</div>
-          <div class="brand-info">
-            <h1 class="brand-name">SubConverter</h1>
-            <span class="brand-version">v2.0</span>
-          </div>
+          <h1 class="brand-name">LaoWang SubConverter V2.0</h1>
         </div>
 
         <nav class="main-nav">
@@ -35,7 +32,6 @@
 
         <div class="header-actions">
           <ThemeSwitcher />
-          <LanguageSwitcher />
         </div>
       </div>
     </header>
@@ -69,13 +65,13 @@
 
         <div class="stat-item glass-card animate-fade-in-up" style="animation-delay: 0.3s">
           <div class="stat-header">
-            <span class="stat-icon">⚡</span>
-            <span class="stat-label">在线节点</span>
+            <span class="stat-icon">🔗</span>
+            <span class="stat-label">短链数量</span>
           </div>
           <div class="stat-value">{{ stats.onlineNodes }}</div>
           <div class="stat-trend">
             <span class="trend-icon">✅</span>
-            <span class="trend-text">健康</span>
+            <span class="trend-text">可用</span>
           </div>
         </div>
 
@@ -144,7 +140,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import ThemeSwitcher from '../components/ThemeSwitcher.vue'
-import LanguageSwitcher from '../components/LanguageSwitcher.vue'
 import QuickConvertCard from '../components/cards/QuickConvertCard.vue'
 import SubscriptionManageCard from '../components/cards/SubscriptionManageCard.vue'
 import SpeedTestCard from '../components/cards/SpeedTestCard.vue'
@@ -156,7 +151,7 @@ const stats = ref({
   totalSubscriptions: 0,
   conversions: 0,
   onlineNodes: 0,
-  clients: 19
+  clients: 25
 })
 
 onMounted(async () => {
@@ -166,11 +161,27 @@ onMounted(async () => {
 
 async function loadStats() {
   try {
+    // Get subscriptions from API
     const subsResponse = await fetch('/api/subscriptions')
-    const subsData = await subsResponse.json()
-    stats.value.totalSubscriptions = subsData.data?.length || 0
+    if (subsResponse.ok) {
+      const subsData = await subsResponse.json()
+      stats.value.totalSubscriptions = subsData.data?.length || 0
+    }
+    
+    // Get conversions from localStorage
     stats.value.conversions = parseInt(localStorage.getItem('conversions') || '0')
-    stats.value.onlineNodes = Math.floor(Math.random() * 50) + 100
+    
+    // Get short links count
+    try {
+      const linksResponse = await fetch('/api/shortlink/list')
+      if (linksResponse.ok) {
+        const linksData = await linksResponse.json()
+        stats.value.onlineNodes = linksData.links?.length || 0
+      }
+    } catch {
+      stats.value.onlineNodes = 0
+    }
+    
   } catch (error) {
     console.error('Failed to load stats:', error)
   }
@@ -452,7 +463,28 @@ function scrollTo(id: string) {
 .three-col-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 20px;
+}
+
+.three-col-grid .card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 400px !important;
+}
+
+.three-col-grid .card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.three-col-grid .card-body > .btn {
+  margin-top: auto !important;
+}
+
+.three-col-grid .card-body > .form-group:last-of-type {
+  margin-bottom: auto !important;
 }
 
 /* ==== 响应式 ==== */

@@ -145,18 +145,19 @@ onMounted(() => {
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 8px;
+  color: #374151;
   font-family: inherit;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
 }
 
 .theme-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--color-border-hover);
+  background: rgba(255, 255, 255, 1);
+  border-color: #6366f1;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
 }
 
 .theme-icon {
@@ -164,7 +165,8 @@ onMounted(() => {
 }
 
 .arrow {
-  transition: transform var(--transition-fast);
+  transition: transform 0.2s ease;
+  color: #6b7280;
 }
 
 .arrow.rotated {
@@ -176,12 +178,13 @@ onMounted(() => {
   top: calc(100% + 8px);
   right: 0;
   min-width: 160px;
-  background: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 2px 10px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  z-index: var(--z-dropdown);
+  z-index: 1000;
+  backdrop-filter: blur(20px);
 }
 
 .dropdown-item {
@@ -192,22 +195,23 @@ onMounted(() => {
   padding: 12px 16px;
   background: none;
   border: none;
-  color: var(--color-text-secondary);
+  color: #374151;
   font-family: inherit;
-  font-size: var(--font-size-sm);
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.15s ease;
 }
 
 .dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-primary);
+  background: rgba(99, 102, 241, 0.08);
+  color: #4f46e5;
 }
 
 .dropdown-item.active {
-  background: rgba(0, 212, 255, 0.1);
-  color: var(--color-accent-cyan);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+  color: #4f46e5;
+  font-weight: 600;
 }
 
 .theme-name {
