@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { existsSync } from 'fs'
 
 // Import routes
 import convertRouter from './routes/convert.js'
@@ -16,6 +17,11 @@ const __dirname = path.dirname(__filename)
 
 const app = express()
 const PORT = process.env.PORT || 3000
+
+console.log('🔧 Server Configuration:')
+console.log('   NODE_ENV:', process.env.NODE_ENV || 'not set')
+console.log('   PORT:', PORT)
+console.log('   __dirname:', __dirname)
 
 // Middleware
 app.use(cors())
@@ -35,30 +41,53 @@ app.get('/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-    const distPath = path.join(__dirname, '../dist')
-    console.log('📁 Serving static files from:', distPath)
+// Serve static files - check if dist directory exists
+const distPath = path.join(__dirname, '../dist')
+const distExists = existsSync(distPath)
+const indexPath = path.join(distPath, 'index.html')
+const indexExists = existsSync(indexPath)
+
+console.log('📁 Static Files Check:')
+console.log('   Dist Path:', distPath)
+console.log('   Dist Exists:', distExists)
+console.log('   Index.html Path:', indexPath)
+console.log('   Index.html Exists:', indexExists)
+
+if (distExists && indexExists) {
+    console.log('✅ Serving static files from dist directory')
 
     // Serve static assets (CSS, JS, images, etc.)
     app.use(express.static(distPath))
 
-    // Explicit root handler for debugging
+    // Explicit root handler
     app.get('/', (req: Request, res: Response) => {
         console.log('🏠 Serving root index.html')
-        res.sendFile(path.join(distPath, 'index.html'))
+        res.sendFile(indexPath)
     })
 
     // Catch-all route for SPA - must be last
     app.get('*', (req: Request, res: Response) => {
         console.log(`🔀 Catch-all route hit: ${req.url}`)
-        res.sendFile(path.join(distPath, 'index.html'))
+        res.sendFile(indexPath)
+    })
+} else {
+    console.log('⚠️  Static files not found - running in API-only mode')
+    app.get('/', (req: Request, res: Response) => {
+        res.json({
+            message: 'LaoWang Sub-converter API',
+            status: 'running',
+            mode: 'api-only',
+            reason: !distExists ? 'dist directory not found' : 'index.html not found',
+            distPath,
+            distExists,
+            indexExists
+        })
     })
 }
 
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack)
+    console.error('❌ Error:', err.stack)
     res.status(500).json({ error: 'Something went wrong!' })
 })
 
