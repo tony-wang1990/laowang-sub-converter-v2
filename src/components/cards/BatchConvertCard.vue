@@ -10,7 +10,10 @@
         <textarea
           v-model="urls"
           class="input textarea"
-          placeholder="https://example.com/sub1&#10;https://example.com/sub2"
+          placeholder="支持订阅URL和节点链接，每行一个:
+https://example.com/sub1
+vmess://eyJ2IjoiMiIs...
+vless://uuid@server:443"
           rows="6"
         />
       </div>
@@ -18,10 +21,31 @@
       <div class="form-group">
         <label class="form-label">目标客户端</label>
         <select v-model="target" class="input">
-          <option value="clash">Clash</option>
-          <option value="singbox">sing-box</option>
-          <option value="surge">Surge</option>
-          <option value="v2rayn">V2RayN</option>
+          <optgroup label="全平台">
+            <option value="clash">Clash</option>
+            <option value="clashmeta">Clash Meta</option>
+            <option value="singbox">sing-box</option>
+          </optgroup>
+          <optgroup label="iOS">
+            <option value="shadowrocket">Shadowrocket</option>
+            <option value="quantumultx">Quantumult X</option>
+            <option value="loon">Loon</option>
+            <option value="surge">Surge</option>
+            <option value="stash">Stash</option>
+          </optgroup>
+          <optgroup label="Android">
+            <option value="v2rayng">v2rayNG</option>
+            <option value="surfboard">Surfboard</option>
+            <option value="nekobox">NekoBox</option>
+          </optgroup>
+          <optgroup label="Windows">
+            <option value="v2rayn">V2RayN</option>
+            <option value="clashverge">Clash Verge</option>
+          </optgroup>
+          <optgroup label="其他">
+            <option value="hiddify">Hiddify</option>
+            <option value="karing">Karing</option>
+          </optgroup>
         </select>
       </div>
 
@@ -64,8 +88,17 @@ const converting = ref(false)
 const results = ref<string[]>([])
 const progress = ref(0)
 
+// 支持的协议列表
+const supportedProtocols = ['http', 'vmess://', 'vless://', 'ss://', 'ssr://', 'trojan://', 'hysteria://', 'hysteria2://', 'tuic://']
+
+// 检查是否为有效的订阅或节点链接
+const isValidLink = (line: string): boolean => {
+  const trimmed = line.trim()
+  return supportedProtocols.some(protocol => trimmed.startsWith(protocol))
+}
+
 const total = computed(() => {
-  return urls.value.split('\n').filter(u => u.trim().startsWith('http')).length
+  return urls.value.split('\n').filter(u => isValidLink(u)).length
 })
 
 async function batchConvert() {
@@ -73,7 +106,7 @@ async function batchConvert() {
   results.value = []
   progress.value = 0
 
-  const urlList = urls.value.split('\n').filter(u => u.trim().startsWith('http'))
+  const urlList = urls.value.split('\n').filter(u => isValidLink(u))
 
   for (const url of urlList) {
     try {

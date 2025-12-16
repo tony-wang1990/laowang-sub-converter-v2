@@ -10,7 +10,9 @@
         :class="{ active: modelValue === client.id }"
         @click="$emit('update:modelValue', client.id)"
       >
-        <div class="client-icon">{{ client.icon }}</div>
+        <div class="client-icon">
+          <img :src="getIconPath(client.id)" :alt="client.name" />
+        </div>
         <div class="client-info">
           <div class="client-name">{{ client.name }}</div>
           <div class="client-platform">{{ client.platform }}</div>
@@ -21,6 +23,24 @@
 </template>
 
 <script setup lang="ts">
+// 导入所有客户端图标
+import clashIcon from '@/assets/icons/clients/clash.svg'
+import clashmetaIcon from '@/assets/icons/clients/clashmeta.svg'
+import clashvergeIcon from '@/assets/icons/clients/clashverge.svg'
+import karingIcon from '@/assets/icons/clients/karing.svg'
+import singboxIcon from '@/assets/icons/clients/singbox.svg'
+import nekoboxIcon from '@/assets/icons/clients/nekobox.svg'
+import hiddifyIcon from '@/assets/icons/clients/hiddify.svg'
+import surgeIcon from '@/assets/icons/clients/surge.svg'
+import quantumultxIcon from '@/assets/icons/clients/quantumultx.svg'
+import shadowrocketIcon from '@/assets/icons/clients/shadowrocket.svg'
+import loonIcon from '@/assets/icons/clients/loon.svg'
+import stashIcon from '@/assets/icons/clients/stash.svg'
+import v2raynIcon from '@/assets/icons/clients/v2rayn.svg'
+import v2rayngIcon from '@/assets/icons/clients/v2rayng.svg'
+import v2boxIcon from '@/assets/icons/clients/v2box.svg'
+import surfboardIcon from '@/assets/icons/clients/surfboard.svg'
+
 const props = defineProps({
   modelValue: {
     type: String,
@@ -30,23 +50,47 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+// 图标映射
+const iconMap: Record<string, string> = {
+  clash: clashIcon,
+  clashmeta: clashmetaIcon,
+  clashverge: clashvergeIcon,
+  karing: karingIcon,
+  singbox: singboxIcon,
+  nekobox: nekoboxIcon,
+  hiddify: hiddifyIcon,
+  surge: surgeIcon,
+  quantumultx: quantumultxIcon,
+  shadowrocket: shadowrocketIcon,
+  loon: loonIcon,
+  stash: stashIcon,
+  v2rayn: v2raynIcon,
+  v2rayng: v2rayngIcon,
+  v2box: v2boxIcon,
+  surfboard: surfboardIcon
+}
+
+const getIconPath = (clientId: string): string => {
+  return iconMap[clientId] || clashIcon
+}
+
 const clients = [
-  { id: 'clash', name: 'Clash', platform: '全平台', icon: '🔥' },
-  { id: 'clashmeta', name: 'Clash Meta', platform: '全平台', icon: '⚡' },
-  { id: 'clashverge', name: 'Clash Verge', platform: 'PC/Mac', icon: '🖥️' },
-  { id: 'karing', name: 'Karing', platform: 'iOS/Android', icon: '🐿️' },
-  { id: 'singbox', name: 'sing-box', platform: '全平台', icon: '📦' },
-  { id: 'nekobox', name: 'NekoBox', platform: 'Android/PC', icon: '🐱' },
-  { id: 'hiddify', name: 'Hiddify', platform: '全平台', icon: '🦋' },
-  { id: 'surge', name: 'Surge', platform: 'iOS/macOS', icon: '🌊' },
-  { id: 'quantumultx', name: 'Quantumult X', platform: 'iOS', icon: '🔮' },
-  { id: 'shadowrocket', name: 'Shadowrocket', platform: 'iOS', icon: '🚀' },
-  { id: 'loon', name: 'Loon', platform: 'iOS', icon: '🎈' },
-  { id: 'stash', name: 'Stash', platform: 'iOS/macOS', icon: '📦' },
-  { id: 'v2rayn', name: 'V2RayN', platform: 'Windows', icon: '💻' },
-  { id: 'v2rayng', name: 'V2RayNG', platform: 'Android', icon: '📱' },
-  { id: 'v2box', name: 'V2Box', platform: 'iOS', icon: '📦' },
-  { id: 'surfboard', name: 'Surfboard', platform: 'Android', icon: '🏄' }
+  { id: 'clash', name: 'Clash', platform: '全平台' },
+  { id: 'clashmeta', name: 'Clash Meta', platform: '全平台' },
+  { id: 'clashverge', name: 'Clash Verge', platform: 'PC/Mac' },
+  { id: 'karing', name: 'Karing', platform: 'iOS/Android' },
+  { id: 'singbox', name: 'sing-box', platform: '全平台' },
+  { id: 'nekobox', name: 'NekoBox', platform: 'Android/PC' },
+  { id: 'hiddify', name: 'Hiddify', platform: '全平台' },
+  { id: 'surge', name: 'Surge', platform: 'iOS/macOS' },
+  { id: 'quantumultx', name: 'Quantumult X', platform: 'iOS' },
+  { id: 'shadowrocket', name: 'Shadowrocket', platform: 'iOS' },
+  { id: 'loon', name: 'Loon', platform: 'iOS' },
+  { id: 'stash', name: 'Stash', platform: 'iOS/macOS' },
+  { id: 'v2rayn', name: 'V2RayN', platform: 'Windows' },
+  { id: 'v2rayng', name: 'V2RayNG', platform: 'Android' },
+  { id: 'v2box', name: 'V2Box', platform: 'iOS' },
+  { id: 'surfboard', name: 'Surfboard', platform: 'Android' }
 ]
 </script>
 
@@ -89,7 +133,18 @@ const clients = [
 }
 
 .client-icon {
-  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .client-info {

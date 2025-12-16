@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="singboxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#2ECC71"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="10" width="36" height="28" rx="4" fill="url(#singboxGrad)"/>
+  <rect x="10" y="14" width="28" height="20" rx="2" fill="white" opacity="0.9"/>
+  <circle cx="24" cy="24" r="6" fill="#4ECDC4"/>
+  <path d="M22 22L27 24.5L22 27V22Z" fill="white"/>
+</svg>

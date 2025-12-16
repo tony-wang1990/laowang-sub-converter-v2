@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="clashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#F7931E"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#clashGrad)"/>
+  <path d="M15 18L24 12L33 18V30L24 36L15 30V18Z" fill="white" opacity="0.9"/>
+  <path d="M24 20L29 23V29L24 32L19 29V23L24 20Z" fill="#FF6B35"/>
+</svg>

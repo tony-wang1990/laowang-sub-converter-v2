@@ -1,7 +1,7 @@
 <template>
   <div class="theme-switcher">
     <button class="theme-btn" @click="toggleDropdown" :title="currentTheme.name">
-      <span class="theme-icon">{{ currentTheme.icon }}</span>
+      <span class="theme-label">主题</span>
       <svg class="arrow" :class="{ rotated: isOpen }" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="6 9 12 15 18 9"></polyline>
       </svg>
@@ -16,7 +16,7 @@
           :class="{ active: currentThemeId === theme.id }"
           @click="setTheme(theme.id)"
         >
-          <span class="theme-icon">{{ theme.icon }}</span>
+          <span class="theme-color" :style="{ background: theme.colors.accentCyan }"></span>
           <span class="theme-name">{{ theme.name }}</span>
         </button>
       </div>
@@ -143,25 +143,28 @@ onMounted(() => {
 .theme-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 8px;
+  gap: 10px;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
   color: #374151;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 48px;
 }
 
 .theme-btn:hover {
   background: rgba(255, 255, 255, 1);
   border-color: #6366f1;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
-.theme-icon {
-  font-size: 1.1rem;
+.theme-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
 }
 
 .arrow {
@@ -212,6 +215,14 @@ onMounted(() => {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
   color: #4f46e5;
   font-weight: 600;
+}
+
+.theme-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .theme-name {

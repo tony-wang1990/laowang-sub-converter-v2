@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="stashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1ABC9C"/>
+      <stop offset="100%" stop-color="#16A085"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="32" height="32" rx="6" fill="url(#stashGrad)"/>
+  <rect x="14" y="16" width="20" height="4" rx="2" fill="white"/>
+  <rect x="14" y="22" width="20" height="4" rx="2" fill="white" opacity="0.8"/>
+  <rect x="14" y="28" width="20" height="4" rx="2" fill="white" opacity="0.6"/>
+</svg>

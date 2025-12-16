@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="v2boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="10" width="36" height="28" rx="6" fill="url(#v2boxGrad)"/>
+  <rect x="10" y="14" width="28" height="20" rx="3" fill="white" opacity="0.95"/>
+  <text x="24" y="29" text-anchor="middle" font-size="12" font-weight="bold" fill="#6366F1" font-family="Arial">V2</text>
+</svg>

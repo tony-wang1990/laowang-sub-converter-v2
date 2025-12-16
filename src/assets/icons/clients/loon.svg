@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="loonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00BCD4"/>
+      <stop offset="100%" stop-color="#03A9F4"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#loonGrad)"/>
+  <ellipse cx="24" cy="26" rx="12" ry="10" fill="white" opacity="0.9"/>
+  <ellipse cx="24" cy="26" rx="8" ry="6" fill="#00BCD4"/>
+  <circle cx="24" cy="14" r="4" fill="white"/>
+  <path d="M20 14C20 14 22 10 24 10C26 10 28 14 28 14" stroke="white" stroke-width="2" fill="none"/>
+</svg>

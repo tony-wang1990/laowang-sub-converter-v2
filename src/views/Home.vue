@@ -95,7 +95,7 @@
         
         <div class="clients-grid">
           <div class="client-badge" v-for="client in supportedClients" :key="client.name">
-            <span class="client-emoji">{{ client.icon }}</span>
+            <img :src="client.icon" :alt="client.name" class="client-icon-img" />
             <span class="client-name">{{ client.name }}</span>
           </div>
         </div>
@@ -118,23 +118,36 @@
 </template>
 
 <script setup lang="ts">
+// 导入客户端图标
+import clashIcon from '@/assets/icons/clients/clash.svg'
+import clashmetaIcon from '@/assets/icons/clients/clashmeta.svg'
+import surgeIcon from '@/assets/icons/clients/surge.svg'
+import quantumultxIcon from '@/assets/icons/clients/quantumultx.svg'
+import shadowrocketIcon from '@/assets/icons/clients/shadowrocket.svg'
+import loonIcon from '@/assets/icons/clients/loon.svg'
+import v2raynIcon from '@/assets/icons/clients/v2rayn.svg'
+import v2rayngIcon from '@/assets/icons/clients/v2rayng.svg'
+import surfboardIcon from '@/assets/icons/clients/surfboard.svg'
+import stashIcon from '@/assets/icons/clients/stash.svg'
+import singboxIcon from '@/assets/icons/clients/singbox.svg'
+
 interface Client {
   name: string;
   icon: string;
 }
 
 const supportedClients: Client[] = [
-  { name: 'Clash', icon: '🔥' },
-  { name: 'Clash Meta', icon: '⚡' },
-  { name: 'Surge', icon: '🌊' },
-  { name: 'Quantumult X', icon: '🔮' },
-  { name: 'Shadowrocket', icon: '🚀' },
-  { name: 'Loon', icon: '🎈' },
-  { name: 'V2RayN', icon: '💻' },
-  { name: 'V2RayNG', icon: '📱' },
-  { name: 'Surfboard', icon: '🏄' },
-  { name: 'Stash', icon: '📦' },
-  { name: 'sing-box', icon: '📦' }
+  { name: 'Clash', icon: clashIcon },
+  { name: 'Clash Meta', icon: clashmetaIcon },
+  { name: 'Surge', icon: surgeIcon },
+  { name: 'Quantumult X', icon: quantumultxIcon },
+  { name: 'Shadowrocket', icon: shadowrocketIcon },
+  { name: 'Loon', icon: loonIcon },
+  { name: 'V2RayN', icon: v2raynIcon },
+  { name: 'V2RayNG', icon: v2rayngIcon },
+  { name: 'Surfboard', icon: surfboardIcon },
+  { name: 'Stash', icon: stashIcon },
+  { name: 'sing-box', icon: singboxIcon }
 ]
 </script>
 
@@ -320,8 +333,10 @@ const supportedClients: Client[] = [
   transform: scale(1.05);
 }
 
-.client-emoji {
-  font-size: 1.2rem;
+.client-icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 /* CTA */

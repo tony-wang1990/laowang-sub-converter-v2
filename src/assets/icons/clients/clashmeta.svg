@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="metaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7B68EE"/>
+      <stop offset="100%" stop-color="#9370DB"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#metaGrad)"/>
+  <path d="M14 24L24 14L34 24L24 34L14 24Z" fill="white"/>
+  <circle cx="24" cy="24" r="6" fill="#7B68EE"/>
+  <path d="M24 16L28 20L24 24L20 20L24 16Z" fill="white" opacity="0.8"/>
+</svg>

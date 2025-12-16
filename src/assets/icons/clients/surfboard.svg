@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="surfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00BCD4"/>
+      <stop offset="100%" stop-color="#0097A7"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#surfGrad)"/>
+  <path d="M12 28Q18 18 24 18Q30 18 36 28" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="24" cy="32" rx="10" ry="4" fill="white" opacity="0.8"/>
+  <circle cx="24" cy="18" r="4" fill="white"/>
+</svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="nekoboxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B9D"/>
+      <stop offset="100%" stop-color="#C44569"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#nekoboxGrad)"/>
+  <ellipse cx="24" cy="28" rx="12" ry="10" fill="white"/>
+  <circle cx="19" cy="26" r="2.5" fill="#333"/>
+  <circle cx="29" cy="26" r="2.5" fill="#333"/>
+  <path d="M22 30Q24 32 26 30" stroke="#333" stroke-width="1.5" fill="none"/>
+  <path d="M24 30V32" stroke="#333" stroke-width="1.5"/>
+  <path d="M12 16L18 22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <path d="M36 16L30 22" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>

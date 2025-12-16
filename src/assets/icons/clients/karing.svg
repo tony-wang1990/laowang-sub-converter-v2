@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <defs>
+    <linearGradient id="karingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <circle cx="24" cy="24" r="22" fill="url(#karingGrad)"/>
+  <ellipse cx="24" cy="26" rx="14" ry="10" fill="white"/>
+  <circle cx="20" cy="24" r="2" fill="#8B5CF6"/>
+  <circle cx="28" cy="24" r="2" fill="#8B5CF6"/>
+  <path d="M20 28Q24 32 28 28" stroke="#8B5CF6" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M16 16L20 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M32 16L28 20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>

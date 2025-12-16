@@ -31,7 +31,7 @@
             :class="['client-btn', { active: selectedClient === client.value }]"
             @click="selectedClient = client.value"
           >
-            <span class="client-icon">{{ client.icon }}</span>
+            <img :src="client.icon" :alt="client.label" class="client-icon-img" />
             <span class="client-name">{{ client.label }}</span>
           </button>
         </div>
@@ -77,7 +77,7 @@
 
       <!-- 转换按钮 -->
       <button
-        class="btn btn-primary w-full"
+        class="btn btn-primary w-full convert-btn"
         :disabled="!subscriptionUrl || !selectedClient || loading"
         @click="convert"
       >
@@ -119,6 +119,24 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
+// 导入客户端图标
+import clashIcon from '@/assets/icons/clients/clash.svg'
+import clashmetaIcon from '@/assets/icons/clients/clashmeta.svg'
+import clashvergeIcon from '@/assets/icons/clients/clashverge.svg'
+import singboxIcon from '@/assets/icons/clients/singbox.svg'
+import surgeIcon from '@/assets/icons/clients/surge.svg'
+import v2raynIcon from '@/assets/icons/clients/v2rayn.svg'
+import v2rayngIcon from '@/assets/icons/clients/v2rayng.svg'
+import shadowrocketIcon from '@/assets/icons/clients/shadowrocket.svg'
+import quantumultxIcon from '@/assets/icons/clients/quantumultx.svg'
+import loonIcon from '@/assets/icons/clients/loon.svg'
+import stashIcon from '@/assets/icons/clients/stash.svg'
+import surfboardIcon from '@/assets/icons/clients/surfboard.svg'
+import nekoboxIcon from '@/assets/icons/clients/nekobox.svg'
+import hiddifyIcon from '@/assets/icons/clients/hiddify.svg'
+import karingIcon from '@/assets/icons/clients/karing.svg'
+import v2boxIcon from '@/assets/icons/clients/v2box.svg'
+
 const subscriptionUrl = ref('')
 const selectedClient = ref('')
 const showAdvanced = ref(false)
@@ -138,35 +156,30 @@ const options = ref({
 
 const clients = [
   // Cross-platform / Popular
-  { value: 'clash', label: 'Clash', icon: '⚔️' },
-  { value: 'singbox', label: 'sing-box', icon: '📦' },
-  { value: 'surge', label: 'Surge', icon: '🌊' },
+  { value: 'clash', label: 'Clash', icon: clashIcon },
+  { value: 'singbox', label: 'sing-box', icon: singboxIcon },
+  { value: 'surge', label: 'Surge', icon: surgeIcon },
   
   // Windows
-  { value: 'v2rayn', label: 'V2RayN', icon: '✈️' },
-  { value: 'clashverge', label: 'Clash Verge', icon: '🔷' },
-  { value: 'clashmeta', label: 'Clash Meta', icon: '⚡' },
+  { value: 'v2rayn', label: 'V2RayN', icon: v2raynIcon },
+  { value: 'clashverge', label: 'Clash Verge', icon: clashvergeIcon },
+  { value: 'clashmeta', label: 'Clash Meta', icon: clashmetaIcon },
   
   // iOS
-  { value: 'shadowrocket', label: 'Shadowrocket', icon: '🚀' },
-  { value: 'quantumultx', label: 'QuantumultX', icon: '🔶' },
-  { value: 'loon', label: 'Loon', icon: '🎈' },
-  { value: 'stash', label: 'Stash', icon: '📱' },
+  { value: 'shadowrocket', label: 'Shadowrocket', icon: shadowrocketIcon },
+  { value: 'quantumultx', label: 'QuantumultX', icon: quantumultxIcon },
+  { value: 'loon', label: 'Loon', icon: loonIcon },
+  { value: 'stash', label: 'Stash', icon: stashIcon },
   
   // Android
-  { value: 'v2rayng', label: 'v2rayNG', icon: '🤖' },
-  { value: 'clashforandroid', label: 'Clash Android', icon: '📱' },
-  { value: 'surfboard', label: 'Surfboard', icon: '🏄' },
-  { value: 'sagernet', label: 'SagerNet', icon: '🔐' },
+  { value: 'v2rayng', label: 'v2rayNG', icon: v2rayngIcon },
+  { value: 'surfboard', label: 'Surfboard', icon: surfboardIcon },
+  { value: 'nekobox', label: 'NekoBox', icon: nekoboxIcon },
   
-  // macOS
-  { value: 'clashx', label: 'ClashX', icon: '🍎' },
-  { value: 'v2rayx', label: 'V2RayX', icon: '✨' },
-  
-  // Others
-  { value: 'shadowsocks', label: 'SS/SSR', icon: '🔒' },
-  { value: 'trojan', label: 'Trojan', icon: '🐴' },
-  { value: 'mixed', label: 'Mixed', icon: '🎯' },
+  // Multi-platform new
+  { value: 'hiddify', label: 'Hiddify', icon: hiddifyIcon },
+  { value: 'karing', label: 'Karing', icon: karingIcon },
+  { value: 'v2box', label: 'V2Box', icon: v2boxIcon },
 ]
 
 const urlCount = computed(() => {
@@ -364,9 +377,10 @@ async function downloadQR() {
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
 }
 
-.client-icon {
-  font-size: 32px;
-  line-height: 1;
+.client-icon-img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .client-name {
@@ -395,6 +409,10 @@ async function downloadQR() {
 .btn-expand:hover {
   background: var(--bg-card);
   border-color: var(--border-glow);
+}
+
+.convert-btn {
+  margin-top: 24px;
 }
 
 .advanced-options {
