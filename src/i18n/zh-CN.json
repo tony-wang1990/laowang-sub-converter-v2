@@ -1,28 +1,28 @@
 {
     "nav": {
         "home": "首页",
-        "converter": "订阅转换",
-        "shortlink": "短链接",
+        "converter": "配置管理",
+        "shortlink": "快捷入口",
         "about": "部署指南"
     },
     "hero": {
-        "title": "LaoWang 订阅转换器",
-        "subtitle": "专业的代理订阅转换服务，支持多种协议和客户端",
-        "start": "开始转换",
+        "title": "LaoWang 配置助手",
+        "subtitle": "专业的网络配置管理服务，支持多种协议和平台",
+        "start": "开始配置",
         "docs": "使用文档"
     },
     "converter": {
-        "title": "订阅转换",
-        "subtitle": "输入订阅链接，选择目标客户端，一键转换",
-        "inputLabel": "订阅链接",
-        "inputPlaceholder": "请输入订阅链接，支持多行输入...",
-        "targetClient": "目标客户端",
-        "selectClient": "选择客户端",
+        "title": "配置转换",
+        "subtitle": "输入配置链接，选择目标平台，一键转换",
+        "inputLabel": "配置链接",
+        "inputPlaceholder": "请输入配置链接，支持多行输入...",
+        "targetClient": "目标格式",
+        "selectClient": "选择格式",
         "advancedOptions": "高级选项",
-        "convert": "生成订阅",
+        "convert": "生成配置",
         "copy": "复制链接",
         "copied": "已复制！",
-        "download": "下载配置",
+        "download": "下载文件",
         "qrcode": "二维码",
         "reset": "重置"
     },
@@ -40,21 +40,21 @@
         "singbox": "sing-box"
     },
     "options": {
-        "emoji": "节点添加 Emoji",
+        "emoji": "端点添加 Emoji",
         "udp": "启用 UDP",
         "skipCert": "跳过证书验证",
-        "sort": "按节点名称排序",
-        "filter": "节点过滤",
-        "filterPlaceholder": "输入关键词过滤节点...",
-        "rename": "节点重命名规则",
+        "sort": "按端点名称排序",
+        "filter": "端点过滤",
+        "filterPlaceholder": "输入关键词过滤端点...",
+        "rename": "端点重命名规则",
         "renamePlaceholder": "旧名称->新名称，每行一条"
     },
     "shortlink": {
-        "title": "短链接管理",
+        "title": "链接管理",
         "subtitle": "生成短链接，便于分享和管理",
         "create": "生成短链接",
-        "yourLinks": "我的短链接",
-        "noLinks": "暂无短链接",
+        "yourLinks": "我的链接",
+        "noLinks": "暂无链接",
         "originalUrl": "原始链接",
         "shortUrl": "短链接",
         "clicks": "访问次数",
@@ -62,12 +62,12 @@
         "delete": "删除"
     },
     "about": {
-        "title": "关于 LaoWang Sub-converter",
-        "description": "一个开源的代理订阅转换服务",
+        "title": "关于 LaoWang Helper",
+        "description": "一个开源的配置管理服务",
         "features": "功能特性",
         "featureList": {
-            "protocols": "支持多种代理协议",
-            "clients": "支持 10+ 客户端格式",
+            "protocols": "支持多种网络协议",
+            "clients": "支持 10+ 平台格式",
             "deploy": "多种部署方式",
             "i18n": "多语言支持"
         },
@@ -76,7 +76,7 @@
         "license": "开源协议"
     },
     "footer": {
-        "copyright": "© 2024 LaoWang Sub-converter",
+        "copyright": "© 2024 LaoWang Helper",
         "github": "GitHub",
         "docs": "文档"
     },
@@ -90,20 +90,20 @@
         "close": "关闭"
     },
     "subs": {
-        "title": "订阅管理",
-        "add": "添加订阅",
-        "empty": "暂无保存的订阅，点击上方按钮添加",
-        "emptyGroup": "该分组暂无订阅",
+        "title": "配置集管理",
+        "add": "添加配置集",
+        "empty": "暂无保存的配置，点击上方按钮添加",
+        "emptyGroup": "该分组暂无配置",
         "allGroups": "全部分组",
         "use": "使用",
         "edit": "编辑",
         "delete": "删除",
-        "addTitle": "添加新订阅",
-        "editTitle": "编辑订阅",
+        "addTitle": "添加新配置",
+        "editTitle": "编辑配置",
         "nameLabel": "名称",
-        "namePlaceholder": "例如: 我的机场",
-        "urlLabel": "订阅链接",
-        "urlPlaceholder": "粘贴订阅链接 (https://...)",
+        "namePlaceholder": "例如: 我的服务器",
+        "urlLabel": "配置链接",
+        "urlPlaceholder": "粘贴配置链接 (https://...)",
         "groupLabel": "分组",
         "groupPlaceholder": "default",
         "tagsLabel": "标签",

@@ -1,15 +1,15 @@
-# 🚀 LaoWang SubConverter V2.0
+# 🚀 LaoWang Config Manager V2.0
 
 <p align="center">
-  <img src="docs/images/demo-header.png" alt="LaoWang SubConverter" width="100%">
+  <img src="docs/images/demo-header.png" alt="LaoWang Config Manager" width="100%">
 </p>
 
 <p align="center">
-  <strong>现代化的订阅转换工具 | Modern Subscription Converter</strong>
+  <strong>现代化的配置管理工具 | Modern Configuration Manager</strong>
 </p>
 
 <p align="center">
-  <a href="https://laowang-sub.zeabur.app">🌐 在线演示</a> •
+  <a href="https://laowang-config.zeabur.app">🌐 在线演示</a> •
   <a href="#功能特性">✨ 功能特性</a> •
   <a href="#部署指南">📦 部署指南</a> •
   <a href="#使用说明">📖 使用说明</a>
@@ -20,20 +20,20 @@
 ## ✨ 功能特性
 
 ### 🔄 快速转换
-- **多客户端支持**: Clash, V2RayN, Shadowrocket, QuantumultX, Surge, sing-box 等 20+ 客户端
-- **多协议支持**: VMess, VLESS, Trojan, Shadowsocks, Hysteria2 等
-- **单节点转换**: 直接粘贴节点链接即可转换
-- **批量转换**: 支持多订阅地址同时转换
+- **多平台支持**: 支持多种主流客户端配置格式
+- **多协议支持**: 支持多种常见的网络协议配置
+- **单项转换**: 直接粘贴配置链接即可转换
+- **批量转换**: 支持多配置地址同时转换
 
-### 📋 订阅管理
-- **订阅存储**: 本地保存常用订阅链接
-- **一键测速**: 批量检测节点可用性和延迟
-- **实时统计**: 显示订阅总数、转换次数等
+### 📋 配置管理
+- **配置存储**: 本地保存常用配置链接
+- **连接测试**: 批量检测端点可用性和延迟
+- **实时统计**: 显示配置总数、转换次数等
 
 ### 🛠️ 实用工具
-- **短链接生成**: 将长订阅链接转为短链接
-- **二维码生成**: 生成节点/订阅的二维码
-- **批量处理**: 批量转换多个订阅
+- **短链接生成**: 将长配置链接转为短链接
+- **二维码生成**: 生成配置的二维码
+- **批量处理**: 批量转换多个配置
 
 ### 🎨 界面设计
 - **现代UI**: 简洁美观的界面设计
@@ -144,23 +144,23 @@ npm run dev:server
 
 ### 快速转换
 
-1. **输入订阅链接或节点链接**
-   - 支持订阅 URL: `https://example.com/sub`
-   - 支持节点链接: `vmess://...`, `vless://...`, `trojan://...` 等
+1. **输入配置链接或端点链接**
+   - 支持配置 URL: `https://example.com/config`
+   - 支持端点链接: `protocol://...` 等
 
-2. **选择目标客户端**
-   - 点击对应客户端图标选择
+2. **选择目标格式**
+   - 点击对应格式图标选择
 
 3. **点击转换**
-   - 获取转换后的订阅链接
+   - 获取转换后的配置链接
    - 可复制链接或下载配置文件
 
 ### 高级选项
 
-- **过滤节点**: 使用正则表达式筛选节点名称
-- **排除节点**: 排除包含特定关键词的节点
-- **节点重命名**: 自定义节点名称格式
-- **去重**: 自动去除重复节点
+- **过滤端点**: 使用正则表达式筛选端点名称
+- **排除端点**: 排除包含特定关键词的端点
+- **端点重命名**: 自定义端点名称格式
+- **去重**: 自动去除重复端点
 
 ---
 
@@ -195,7 +195,7 @@ laowang-sub-converter-v2/
 
 ## 🌐 API 文档
 
-### 订阅转换
+### 配置转换
 
 ```http
 GET /api/convert
@@ -203,8 +203,8 @@ GET /api/convert
 
 | 参数 | 类型 | 说明 |
 |------|------|------|
-| url | string | 订阅链接 (必填) |
-| target | string | 目标客户端 (必填) |
+| url | string | 配置链接 (必填) |
+| target | string | 目标格式 (必填) |
 | include | string | 包含关键词 (可选) |
 | exclude | string | 排除关键词 (可选) |
 
@@ -219,24 +219,24 @@ Content-Type: application/json
 }
 ```
 
-### 节点测速
+### 连接测试
 
 ```http
-GET /api/speedtest?url={订阅链接}
+GET /api/speedtest?url={配置链接}
 ```
 
 ---
 
-## � 更新日志
+##  更新日志
 
 ### V2.0 (2024-12)
 - 🎨 全新现代化 UI 设计
-- ⚡ 单节点直接转换支持
+- ⚡ 单端点直接转换支持
 - 🚀 多主题切换
 - 📊 实时统计功能
 - 🔗 短链接生成
 - 📱 二维码生成
-- 🏃 节点测速功能
+- 🏃 连接测试功能
 
 ---
 

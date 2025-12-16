@@ -25,15 +25,15 @@
           <div class="glow-orb orb-2"></div>
           <div class="floating-card card-1">
             <span class="card-icon">🔄</span>
-            <span>Clash</span>
+            <span>Config</span>
           </div>
           <div class="floating-card card-2">
             <span class="card-icon">⚡</span>
-            <span>V2Ray</span>
+            <span>Profile</span>
           </div>
           <div class="floating-card card-3">
             <span class="card-icon">🚀</span>
-            <span>Shadowrocket</span>
+            <span>Link</span>
           </div>
         </div>
       </div>
@@ -50,13 +50,13 @@
           <div class="feature-card glass-card">
             <div class="feature-icon">🔄</div>
             <h3>多协议支持</h3>
-            <p>支持 SS、SSR、VMess、VLESS、Trojan、Hysteria 等主流代理协议</p>
+            <p>支持多种主流网络通讯协议配置与管理</p>
           </div>
           
           <div class="feature-card glass-card">
             <div class="feature-icon">📱</div>
-            <h3>多客户端格式</h3>
-            <p>一键转换为 Clash、Surge、Quantumult X、Shadowrocket 等 10+ 客户端格式</p>
+            <h3>多平台适配</h3>
+            <p>一键转换为多种桌面及移动端应用兼容的格式</p>
           </div>
           
           <div class="feature-card glass-card">
@@ -80,7 +80,7 @@
           <div class="feature-card glass-card">
             <div class="feature-icon">⚙️</div>
             <h3>高级配置</h3>
-            <p>节点过滤、重命名、排序、Emoji 添加等高级功能</p>
+            <p>端点过滤、重命名、排序、Emoji 添加等高级功能</p>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@
     <section class="clients">
       <div class="container">
         <h2 class="section-title text-center">
-          <span class="text-gradient">支持的客户端</span>
+          <span class="text-gradient">支持的平台</span>
         </h2>
         
         <div class="clients-grid">
@@ -107,7 +107,7 @@
       <div class="container">
         <div class="cta-card glass-card">
           <h2>开始使用</h2>
-          <p>立即体验专业的订阅转换服务</p>
+          <p>立即体验专业的配置管理服务</p>
           <router-link to="/converter" class="btn btn-primary">
             🚀 开始转换
           </router-link>
