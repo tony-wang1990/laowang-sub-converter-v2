@@ -9,24 +9,31 @@ export interface RemoteBackend {
 
 export const REMOTE_BACKENDS: RemoteBackend[] = [
     {
-        name: 'API-1 (dler.io)',
-        url: 'https://api.dler.io/sub',
-        timeout: 10000,
+        name: 'API-1 (肥羊)',
+        url: 'https://sub.v1.mk/sub',
+        timeout: 15000,
         priority: 1,
         enabled: true
     },
     {
-        name: 'API-2 (xeton.dev)',
-        url: 'https://sub.xeton.dev/sub',
-        timeout: 10000,
+        name: 'API-2 (品云)',
+        url: 'https://api.pinyun.me/sub',
+        timeout: 15000,
         priority: 2,
         enabled: true
     },
     {
-        name: 'API-3 (wcc.best)',
-        url: 'https://api.wcc.best/sub',
-        timeout: 10000,
+        name: 'API-3 (nameless13)',
+        url: 'https://api.nameless13.com/sub',
+        timeout: 15000,
         priority: 3,
+        enabled: true
+    },
+    {
+        name: 'API-4 (subconverter-web)',
+        url: 'https://sub.id9.cc/sub',
+        timeout: 15000,
+        priority: 4,
         enabled: true
     }
 ]
