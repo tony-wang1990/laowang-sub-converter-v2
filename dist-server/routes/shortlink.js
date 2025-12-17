@@ -30,13 +30,9 @@ router.post('/', async (req, res) => {
         const existingLinks = await getAllShortLinks();
         const existingLink = existingLinks.find(link => link.original_url === url);
         if (existingLink) {
-            const baseUrl = `${req.protocol}://${req.get('host')}`;
             return res.json({
-                shortUrl: `${baseUrl}/s/${existingLink.short_code}`,
-                id: existingLink.short_code,
-                originalUrl: url,
-                created: existingLink.created_at,
-                clicks: existingLink.clicks
+                success: true,
+                code: existingLink.short_code
             });
         }
         // 生成新短码，确保唯一性
@@ -55,14 +51,10 @@ router.post('/', async (req, res) => {
             return res.status(500).json({ error: 'Failed to generate unique short code' });
         }
         // 创建短链接
-        const newLink = await createShortLink(shortCode, url);
-        const baseUrl = `${req.protocol}://${req.get('host')}`;
+        await createShortLink(shortCode, url);
         res.json({
-            shortUrl: `${baseUrl}/s/${shortCode}`,
-            id: shortCode,
-            originalUrl: url,
-            created: newLink.created_at,
-            clicks: 0
+            success: true,
+            code: shortCode
         });
     }
     catch (error) {

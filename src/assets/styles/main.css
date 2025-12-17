@@ -269,11 +269,18 @@ body {
 
 /* 工具卡片按钮对齐 */
 .three-col-grid .shortlink-card,
-.three-col-grid .qrcode-card,
-.three-col-grid .batch-convert-card {
+.three-col-grid .qrcode-card {
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
+}
+
+/* 批量转换卡片 - 允许自动扩展高度 */
+.three-col-grid .batch-convert-card {
+  display: flex !important;
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: 100% !important;
 }
 
 .three-col-grid .shortlink-card .card-body,
@@ -329,4 +336,19 @@ body {
   min-height: auto !important;
   flex: 0 !important;
   padding: 12px 18px !important;
+}
+
+/* Result input text visibility fix */
+.result-input,
+.result-url,
+input.result-input,
+input.result-url {
+  color: #1a202c !important;
+  font-weight: 600 !important;
+}
+
+.result-input::selection,
+.result-url::selection {
+  background: #667eea !important;
+  color: #ffffff !important;
 }

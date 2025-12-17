@@ -14,25 +14,44 @@ router.get('/', async (req, res) => {
             });
         }
         const subscriptionUrl = decodeURIComponent(url);
-        // 获取订阅内容
-        // @ts-ignore
-        let rawContent = subscriptionCache.get(subscriptionCache.generateKey(subscriptionUrl));
-        if (!rawContent) {
-            const response = await fetch(subscriptionUrl, {
-                headers: { 'User-Agent': 'LaoWang-Sub-Converter/2.0' }
-            });
-            if (!response.ok) {
-                return res.status(502).json({
+        let nodes = [];
+        // 检测是否为单个节点链接（非HTTP/HTTPS协议）
+        const isNodeLink = /^(vmess|vless|ss|ssr|trojan|hysteria|hysteria2|tuic):\/\//i.test(subscriptionUrl);
+        if (isNodeLink) {
+            // 直接解析单个节点
+            console.log('Detected single node link, parsing directly...');
+            const parsedNodes = parseSubscription(subscriptionUrl);
+            if (parsedNodes.length > 0) {
+                nodes = parsedNodes;
+            }
+            else {
+                return res.status(400).json({
                     success: false,
-                    error: 'Failed to fetch subscription'
+                    error: 'Invalid node link format'
                 });
             }
-            rawContent = await response.text();
-            // @ts-ignore
-            subscriptionCache.set(subscriptionCache.generateKey(subscriptionUrl), rawContent);
         }
-        // 解析节点
-        const nodes = parseSubscription(rawContent);
+        else {
+            // 获取订阅内容
+            // @ts-ignore
+            let rawContent = subscriptionCache.get(subscriptionCache.generateKey(subscriptionUrl));
+            if (!rawContent) {
+                const response = await fetch(subscriptionUrl, {
+                    headers: { 'User-Agent': 'LaoWang-Sub-Converter/2.0' }
+                });
+                if (!response.ok) {
+                    return res.status(502).json({
+                        success: false,
+                        error: 'Failed to fetch subscription'
+                    });
+                }
+                rawContent = await response.text();
+                // @ts-ignore
+                subscriptionCache.set(subscriptionCache.generateKey(subscriptionUrl), rawContent);
+            }
+            // 解析节点
+            nodes = parseSubscription(rawContent);
+        }
         if (nodes.length === 0) {
             return res.json({
                 success: true,

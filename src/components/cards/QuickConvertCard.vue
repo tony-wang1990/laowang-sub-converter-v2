@@ -86,26 +86,23 @@
         {{ loading ? '转换中...' : '立即转换' }}
       </button>
 
-      <!-- 结果显示 -->
-      <div v-if="result" class="result-panel">
+      <!-- 转换结果 -->
+      <div v-if="result" class="result">
         <div class="result-header">
-          <span class="result-title">✅ 转换成功</span>
-          <div class="result-actions">
-            <button class="btn-icon" @click="copyUrl" title="复制链接">
-              📋
-            </button>
-            <button class="btn-icon" @click="downloadQR" title="下载二维码">
-              📱
-            </button>
-          </div>
+          <span class="success-text">✅ 转换成功</span>
+          <button class="btn-copy" @click="copyUrl" title="复制转换结果">
+            复制
+          </button>
         </div>
-        <div class="result-url">
-          {{ result }}
-        </div>
-        <div class="result-stats">
-          <span>转换源: {{ conversionSource }}</span>
-          <span>节点数: {{ nodeCount }}</span>
-        </div>
+        <input 
+          type="text" 
+          :value="result" 
+          readonly 
+          class="result-input"
+          style="color: #1a202c !important; font-weight: 600 !important; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 255, 0.95) 100%) !important;"
+          @click="selectText"
+        />
+        <div class="result-hint">点击输入框全选复制</div>
       </div>
 
       <!-- 错误提示 -->
@@ -117,7 +114,42 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick, watch, onMounted } from 'vue'
+
+// 强制修复样式
+const forceFixInputColor = () => {
+  nextTick(() => {
+    // 修复结果卡片背景
+    const resultCards = document.querySelectorAll('.result')
+    resultCards.forEach((card: any) => {
+      card.style.setProperty('background', 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', 'important')
+    })
+    
+    // 修复输入框样式
+    const inputs = document.querySelectorAll('.result-input')
+    inputs.forEach((input: any) => {
+      input.style.setProperty('color', '#000000', 'important')
+      input.style.setProperty('-webkit-text-fill-color', '#000000', 'important')
+      input.style.setProperty('opacity', '1', 'important')
+      input.style.setProperty('background', 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 255, 0.95) 100%)', 'important')
+    })
+    
+    // 修复文字和按钮
+    const whiteTextElements = document.querySelectorAll('.success-text, .result-hint')
+    whiteTextElements.forEach((el: any) => {
+      el.style.setProperty('color', '#ffffff', 'important')
+      el.style.setProperty('-webkit-text-fill-color', '#ffffff', 'important')
+    })
+
+    const copyButtons = document.querySelectorAll('.btn-copy')
+    copyButtons.forEach((btn: any) => {
+      btn.style.setProperty('color', '#4338ca', 'important')
+      btn.style.setProperty('-webkit-text-fill-color', '#4338ca', 'important')
+      btn.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important')
+    })
+  })
+}
+
 
 // 导入客户端图标
 import clashIcon from '@/assets/icons/clients/clash.svg'
@@ -142,6 +174,14 @@ const selectedClient = ref('')
 const showAdvanced = ref(false)
 const loading = ref(false)
 const result = ref('')
+
+onMounted(() => {
+  forceFixInputColor()
+})
+
+watch(result, () => {
+  forceFixInputColor()
+})
 const error = ref('')
 const conversionSource = ref('')
 const nodeCount = ref(0)
@@ -244,7 +284,12 @@ async function convert() {
 
 function copyUrl() {
   navigator.clipboard.writeText(result.value)
-  alert('✅ 链接已复制到剪贴板')
+  // 静默复制，不显示弹窗
+}
+
+function selectText(event: Event) {
+  const input = event.target as HTMLInputElement
+  input.select()
 }
 
 async function downloadQR() {
@@ -392,6 +437,115 @@ async function downloadQR() {
   color: inherit;
 }
 
+.animate-spin {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 结果卡片样式 - 与ShortLinkCard保持一致 */
+.result {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--primary-gradient);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.success-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-copy {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #4338ca;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-copy:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #4338ca;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-copy:active {
+  transform: translateY(0);
+}
+
+.result-input {
+  width: 100%;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 255, 0.95) 100%) !important;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  font-family: 'Consolas', 'Monaco', 'SF Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a202c !important;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.result-input::selection {
+  background: #667eea;
+  color: #ffffff;
+}
+
+.result-input:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0ff 100%) !important;
+}
+
+.result-input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25), 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0ff 100%) !important;
+}
+
+.result-hint {
+  margin-top: 12px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .btn-expand {
   display: flex;
   align-items: center;
@@ -458,69 +612,6 @@ async function downloadQR() {
   width: 18px;
   height: 18px;
   cursor: pointer;
-}
-
-.result-panel {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md);
-  background: var(--success-gradient);
-  border-radius: var(--radius-md);
-  color: white;
-}
-
-.result-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-sm);
-}
-
-.result-title {
-  font-weight: 600;
-}
-
-.result-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.btn-icon {
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 16px;
-  transition: all var(--transition-fast);
-}
-
-.btn-icon:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.result-url {
-  padding: var(--spacing-sm);
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-sm);
-  font-family: monospace;
-  font-size: 12px;
-  word-break: break-all;
-  margin-bottom: var(--spacing-sm);
-}
-
-.result-stats {
-  display: flex;
-  gap: var(--spacing-md);
-  font-size: 13px;
-  opacity: 0.9;
-}
-
-.error-panel {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-md);
-  background: var(--secondary-gradient);
-  border-radius: var(--radius-md);
-  color: white;
 }
 
 @media (max-width: 1024px) {

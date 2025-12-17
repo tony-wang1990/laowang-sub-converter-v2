@@ -1,8 +1,9 @@
 import express from 'express';
-import { parseSubscription } from '../utils/parsers.js';
+import { parseSubscription, addEmoji } from '../utils/parsers.js';
+import { convertToTarget } from '../utils/converters.js';
 import { subscriptionCache } from '../utils/cache.js';
 import { getSubscriptionStats } from '../utils/nodeTest.js';
-import { workerPool } from '../utils/workerManager.js';
+// Worker removed - using synchronous processing
 import { smartConvert, parseMultipleUrls } from '../utils/remoteConverter.js';
 import { fetchExternalConfig, applyExternalConfig } from '../utils/configManager.js';
 const router = express.Router();
@@ -37,7 +38,7 @@ const SUPPORTED_CLIENTS = {
     karing: 'clash',
     v2box: 'shadowrocket'
 };
-// 订阅转换接口（支持混合模式和多订阅）
+// 订阅转换接口（支持混合模式、多订阅、单节点直接转换）
 router.get('/', async (req, res) => {
     try {
         const { target, url, emoji = '1', udp = '1', scert = '0', sort = '0', include = '', exclude = '', rename = '', mode = 'fallback', tfo = '0', fdn = '1', // 默认开启过滤
@@ -52,10 +53,91 @@ router.get('/', async (req, res) => {
         if (!url) {
             return res.status(400).json({ error: 'Subscription URL is required' });
         }
+        const decodedUrl = decodeURIComponent(url);
+        // 检测是否为直接节点链接（vmess://, vless://, ss://, ssr://, trojan://, hysteria://, hysteria2://, tuic://, wg://, brook://, snell://）
+        const nodeProtocolPattern = /^(vmess|vless|ss|ssr|trojan|hysteria|hysteria2|tuic|wg|wireguard|brook|snell):\/\//i;
+        const isDirectNode = nodeProtocolPattern.test(decodedUrl);
+        if (isDirectNode) {
+            // 直接节点链接处理 - 使用同步处理，不走 Worker
+            console.log(`🔗 Direct node conversion for target: ${target}`);
+            try {
+                // 解析节点
+                let nodes = parseSubscription(decodedUrl);
+                if (!nodes || nodes.length === 0) {
+                    return res.status(400).json({
+                        error: 'Failed to parse node link',
+                        hint: 'Please check if the node link format is correct'
+                    });
+                }
+                // 处理选项
+                if (include) {
+                    const keywords = include.split('|');
+                    nodes = nodes.filter(node => keywords.some(kw => node.name.includes(kw)));
+                }
+                if (exclude) {
+                    const keywords = exclude.split('|');
+                    nodes = nodes.filter(node => !keywords.some(kw => node.name.includes(kw)));
+                }
+                if (sort === '1') {
+                    nodes.sort((a, b) => a.name.localeCompare(b.name));
+                }
+                if (emoji === '1') {
+                    nodes = nodes.map(node => ({ ...node, name: addEmoji(node.name) }));
+                }
+                // 转换
+                const result = convertToTarget(nodes, SUPPORTED_CLIENTS[target], {
+                    udp: udp === '1',
+                    skipCert: scert === '1'
+                });
+                console.log(`✅ Direct node conversion succeeded, ${nodes.length} node(s)`);
+                // 设置响应头
+                const contentTypes = {
+                    clash: 'text/yaml',
+                    clashmeta: 'text/yaml',
+                    surge: 'text/plain',
+                    quantumultx: 'text/plain',
+                    shadowrocket: 'text/plain',
+                    loon: 'text/plain',
+                    v2rayn: 'text/plain',
+                    v2rayng: 'text/plain',
+                    surfboard: 'text/plain',
+                    stash: 'text/yaml',
+                    singbox: 'application/json'
+                };
+                let extension = 'txt';
+                if (target === 'singbox') {
+                    extension = 'json';
+                }
+                else if (['clash', 'clashmeta', 'stash'].includes(target)) {
+                    extension = 'yaml';
+                }
+                else if (['surge', 'loon', 'surfboard'].includes(target)) {
+                    extension = 'conf';
+                }
+                res.setHeader('Content-Type', contentTypes[target] || 'text/plain');
+                res.setHeader('Content-Disposition', `attachment; filename="config.${extension}"`);
+                res.setHeader('X-Conversion-Source', 'direct');
+                return res.send(result);
+            }
+            catch (nodeError) {
+                console.error('Direct node conversion error:', nodeError);
+                return res.status(500).json({
+                    error: 'Failed to convert node',
+                    message: nodeError.message || 'Unknown error'
+                });
+            }
+        }
         // 解析多个订阅URL（支持 | 或换行分隔）
-        const urls = parseMultipleUrls(decodeURIComponent(url));
+        const urls = parseMultipleUrls(decodedUrl);
         console.log(`Converting ${urls.length} subscription(s) in ${mode} mode`);
-        // 本地转换函数
+        // 如果没有有效的订阅URL，返回错误
+        if (urls.length === 0) {
+            return res.status(400).json({
+                error: 'No valid subscription URLs found',
+                hint: 'URL must start with http:// or https://, or be a valid node link (vmess://, vless://, etc.)'
+            });
+        }
+        // 本地转换函数 - 使用同步处理替代 Worker
         const localConvertFn = async (params) => {
             const allContents = [];
             // 获取所有订阅内容
@@ -79,25 +161,32 @@ router.get('/', async (req, res) => {
             }
             // 合并所有订阅内容
             const mergedContent = allContents.join('\n');
-            // 使用 Worker 线程进行处理
-            // @ts-ignore
-            const workerResult = await workerPool.run({
-                content: mergedContent,
-                target: params.target,
-                options: {
-                    include: params.include,
-                    exclude: params.exclude,
-                    sort: params.sort,
-                    rename: params.rename,
-                    emoji: params.emoji,
-                    udp: params.udp,
-                    skipCert: params.skipCert
-                }
-            });
-            if (workerResult.error) {
-                throw new Error(workerResult.error);
+            // 直接同步处理（不使用 Worker）
+            let nodes = parseSubscription(mergedContent);
+            if (!nodes || nodes.length === 0) {
+                throw new Error('No nodes found in subscription');
             }
-            return workerResult.result;
+            // 处理选项
+            if (params.include) {
+                const keywords = params.include.split('|');
+                nodes = nodes.filter((node) => keywords.some((kw) => node.name.includes(kw)));
+            }
+            if (params.exclude) {
+                const keywords = params.exclude.split('|');
+                nodes = nodes.filter((node) => !keywords.some((kw) => node.name.includes(kw)));
+            }
+            if (params.sort) {
+                nodes.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            if (params.emoji) {
+                nodes = nodes.map((node) => ({ ...node, name: addEmoji(node.name) }));
+            }
+            // 转换
+            const result = convertToTarget(nodes, params.target, {
+                udp: params.udp,
+                skipCert: params.skipCert
+            });
+            return result;
         };
         // 使用智能转换
         let conversionParams = {

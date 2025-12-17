@@ -1,14 +1,14 @@
 import express from 'express';
-import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
 // Import routes
-import convertRouter from './routes/convert.js';
-import shortlinkRouter from './routes/shortlink.js';
-import subscriptionRouter from './routes/subscriptions.js';
-import qrcodeRouter from './routes/qrcode.js';
-import speedtestRouter from './routes/speedtest.js';
+import convertRoutes from './routes/convert.js';
+import shortLinkRoutes from './routes/shortlink.js';
+import subscriptionRoutes from './routes/subscriptions.js';
+import qrcodeRoutes from './routes/qrcode.js';
+import speedTestRoutes from './routes/speedtest.js';
+import { startCleanupScheduler } from './utils/cleanup.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -18,16 +18,25 @@ console.log('   NODE_ENV:', process.env.NODE_ENV || 'not set');
 console.log('   PORT:', PORT);
 console.log('   __dirname:', __dirname);
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 // API routes
-app.use('/api/convert', convertRouter);
-app.use('/api/shortlink', shortlinkRouter);
-app.use('/api/subscriptions', subscriptionRouter);
-app.use('/api/qrcode', qrcodeRouter);
-app.use('/api/speedtest', speedtestRouter);
-app.use('/s', shortlinkRouter);
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/convert', convertRoutes);
+app.use('/api/shortlink', shortLinkRoutes);
+app.use('/api/qrcode', qrcodeRoutes);
+app.use('/api/speedtest', speedTestRoutes);
+app.use('/s', shortLinkRoutes); // Keep /s for shortlinks
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -46,19 +55,18 @@ if (distExists && indexExists) {
     console.log('✅ Serving static files from dist directory');
     // Serve static assets (CSS, JS, images, etc.)
     app.use(express.static(distPath));
-    // Explicit root handler
-    app.get('/', (req, res) => {
-        console.log('🏠 Serving root index.html');
-        res.sendFile(indexPath);
-    });
     // Catch-all route for SPA - must be last
     app.get('*', (req, res) => {
+        // Don't intercept API routes or shortlink routes
+        if (req.path.startsWith('/api') || req.path.startsWith('/s/')) {
+            return res.status(404).send('Not Found');
+        }
         console.log(`🔀 Catch-all route hit: ${req.url}`);
         res.sendFile(indexPath);
     });
 }
 else {
-    console.log('⚠️  Static files not found - running in API-only mode');
+    console.log('⚠️  Dist directory not found, API-only mode');
     app.get('/', (req, res) => {
         res.json({
             message: 'LaoWang Sub-converter API',
@@ -81,5 +89,7 @@ app.listen(PORT, () => {
     console.log(`🚀 LaoWang Sub-converter server running on port ${PORT}`);
     console.log(`📡 API: http://localhost:${PORT}/api`);
     console.log(`🔗 Health: http://localhost:${PORT}/health`);
+    // Start cleanup scheduler
+    startCleanupScheduler();
 });
 export default app;

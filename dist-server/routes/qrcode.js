@@ -1,6 +1,38 @@
 import express from 'express';
 import QRCode from 'qrcode';
 const router = express.Router();
+// POST /api/qrcode - Generate QR code (for frontend form submission)
+router.post('/', async (req, res) => {
+    try {
+        const { text, size = 300, errorCorrectionLevel = 'M' } = req.body;
+        if (!text) {
+            return res.status(400).json({ error: 'Text is required' });
+        }
+        const qrSize = typeof size === 'number' ? size : parseInt(size, 10);
+        if (isNaN(qrSize) || qrSize < 100 || qrSize > 1000) {
+            return res.status(400).json({ error: 'Size must be between 100 and 1000' });
+        }
+        const validLevels = ['L', 'M', 'Q', 'H'];
+        const ecLevel = errorCorrectionLevel.toString().toUpperCase();
+        if (!validLevels.includes(ecLevel)) {
+            return res.status(400).json({ error: 'Invalid error correction level' });
+        }
+        // Generate QR code as buffer
+        const qrBuffer = await QRCode.toBuffer(text, {
+            width: qrSize,
+            margin: 2,
+            errorCorrectionLevel: ecLevel,
+            type: 'png'
+        });
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', 'inline; filename="qrcode.png"');
+        res.send(qrBuffer);
+    }
+    catch (error) {
+        console.error('QR code generation error:', error);
+        res.status(500).json({ error: 'Failed to generate QR code' });
+    }
+});
 // GET /api/qrcode - Generate QR code
 router.get('/', async (req, res) => {
     try {

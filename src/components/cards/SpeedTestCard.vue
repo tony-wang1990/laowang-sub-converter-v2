@@ -18,6 +18,7 @@
         </div>
 
         <button
+          type="button"
           class="btn btn-accent w-full"
           :disabled="!selectedSub || testing"
           @click="startSpeedTest"
@@ -29,24 +30,35 @@
       </div>
 
       <!-- 测速结果 -->
-      <div v-if="results.length > 0" class="results">
+      <div v-if="stats.total > 0" class="results result">
         <div class="result-header">
-          <span>✅ 测速完成</span>
-          <span class="stats-text">
-            {{ stats.reachable }}/{{ stats.total }} 可达
-          </span>
+          <div class="result-title-group">
+            <span class="success-text">✅ 测速完成</span>
+          </div>
+          <span class="result-summary text-white/90">{{ stats.reachable }}/{{ stats.total }} 可达 ({{ (((stats.reachable || 0) / (stats.total || 1)) * 100).toFixed(1) }}%)</span>
         </div>
         
-        <div class="result-list">
-          <div v-for="(result, index) in results.slice(0, 5)" :key="index" class="result-item">
-            <div class="result-info">
-              <span class="result-name">{{ result.name }}</span>
-              <span class="result-server">{{ result.server }}:{{ result.port }}</span>
+        <div v-if="results.length > 0" class="result-list">
+          <div v-for="(result, index) in results" :key="index" class="check-result-item">
+            <div class="node-info">
+              <div class="node-name" :title="result.name">{{ result.name }}</div>
+              <div class="node-address">{{ result.server }}</div>
             </div>
-            <span :class="['result-latency', result.reachable ? 'ok' : 'fail']">
-              {{ result.reachable ? `${result.latency}ms` : '不可达' }}
-            </span>
+            <div class="node-latency" :class="{
+              'fast': result.latency < 200,
+              'medium': result.latency >= 200 && result.latency < 500,
+              'slow': result.latency >= 500,
+              'timeout': !result.reachable
+            }">
+              {{ result.reachable ? result.latency + 'ms' : '超时' }}
+            </div>
           </div>
+        </div>
+
+        <div v-else class="empty-result">
+          <span class="empty-icon">😢</span>
+          <p class="empty-text">所有节点均不可达</p>
+          <p class="empty-hint">请检查节点配置或网络连接</p>
         </div>
       </div>
     </div>
@@ -54,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 
 const subscriptions = ref<any[]>([])
 const selectedSub = ref('')
@@ -80,17 +92,48 @@ async function startSpeedTest() {
     const response = await fetch(`/api/speedtest?url=${encodeURIComponent(selectedSub.value)}`)
     const data = await response.json()
     
+    console.log('Speed test response:', data)
+    
     if (data.success) {
       results.value = data.results || []
       stats.value = data.stats || { total: 0, reachable: 0 }
+      console.log('Results:', results.value)
+      console.log('Stats:', stats.value)
+    } else {
+      console.error('Speed test failed:', data.error || data.message)
+      alert(`测速失败：${data.error || data.message || '未知错误'}`)
     }
   } catch (error) {
-    console.error('Speed test failed:', error)
+    console.error('Speed test error:', error)
     alert('测速失败，请检查订阅链接')
   } finally {
     testing.value = false
   }
 }
+
+// 强制修复样式
+const forceFixInputColor = () => {
+  nextTick(() => {
+    // 修复结果卡片背景
+    const resultCards = document.querySelectorAll('.result')
+    resultCards.forEach((card: any) => {
+      card.style.setProperty('background', 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', 'important')
+    })
+    
+    // 修复文字颜色
+    const whiteTextElements = document.querySelectorAll('.success-text, .result-header')
+    whiteTextElements.forEach((el: any) => {
+      el.style.setProperty('color', '#ffffff', 'important')
+    })
+  })
+}
+
+watch(results, () => {
+  if (results.value.length > 0) {
+    forceFixInputColor()
+  }
+}, { deep: true })
+
 </script>
 
 <style scoped>
@@ -99,6 +142,8 @@ async function startSpeedTest() {
   display: flex;
   flex-direction: column;
   min-height: 280px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card-top {
@@ -108,6 +153,7 @@ async function startSpeedTest() {
   margin-bottom: 24px;
   padding-bottom: 16px;
   border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  min-width: 0;
 }
 
 .card-top .card-title {
@@ -121,16 +167,19 @@ async function startSpeedTest() {
   border-radius: 20px;
   font-size: 12px;
   color: white;
+  flex-shrink: 0;
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .form-group {
   margin-bottom: 0;
+  min-width: 0;
 }
 
 .form-label {
@@ -141,66 +190,142 @@ async function startSpeedTest() {
   color: var(--text-secondary);
 }
 
-.results {
-  margin-top: 20px;
-  padding: 16px;
-  background: rgba(248, 250, 252, 0.8);
+.input {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 结果样式 */
+.result {
+  margin-top: 24px;
+  padding: 24px;
+  background: var(--primary-gradient);
   border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
 .result-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--spacing-sm);
-  font-weight: 600;
+  align-items: center;
+  margin-bottom: 16px;
+  color: white;
+  flex-shrink: 0;
 }
 
-.stats-text {
-  color: var(--text-muted);
-  font-size: 14px;
+.success-text {
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-summary {
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 600;
 }
 
 .result-list {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 12px;
+  max-height: 400px; /* 增加高度 */
+  overflow-y: auto;
+  padding-right: 8px;
 }
 
-.result-item {
+/* 美化滚动条 */
+.result-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.result-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.result-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.check-result-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm);
-  background: var(--bg-card);
-  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
 }
 
-.result-info {
+.node-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow: hidden;
+  margin-right: 12px;
 }
 
-.result-name {
-  font-weight: 600;
+.node-name {
   font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.result-server {
+.node-address {
   font-size: 12px;
-  color: var(--text-muted);
+  color: #6b7280;
+  font-family: monospace;
 }
 
-.result-latency {
+.node-latency {
+  font-family: monospace;
   font-weight: 700;
   font-size: 14px;
+  white-space: nowrap;
 }
 
-.result-latency.ok {
-  color: #4facfe;
+.node-latency.fast { color: #10b981; }
+.node-latency.medium { color: #f59e0b; }
+.node-latency.slow { color: #ef4444; }
+.node-latency.timeout { color: #9ca3af; }
+
+.empty-result {
+  text-align: center;
+  padding: 24px 12px;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
-.result-latency.fail {
-  color: #f5576c;
+.empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+  word-break: break-all;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+  word-break: break-all;
 }
 </style>

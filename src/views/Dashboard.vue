@@ -54,24 +54,24 @@
         <div class="stat-item glass-card animate-fade-in-up" style="animation-delay: 0.2s">
           <div class="stat-header">
             <span class="stat-icon">🔄</span>
-            <span class="stat-label">转换次数</span>
+            <span class="stat-label">本地转换记录</span>
           </div>
           <div class="stat-value">{{ stats.conversions }}</div>
           <div class="stat-trend">
             <span class="trend-icon">⚡</span>
-            <span class="trend-text">稳定运行</span>
+            <span class="trend-text">浏览器缓存</span>
           </div>
         </div>
 
         <div class="stat-item glass-card animate-fade-in-up" style="animation-delay: 0.3s">
           <div class="stat-header">
             <span class="stat-icon">🔗</span>
-            <span class="stat-label">短链数量</span>
+            <span class="stat-label">短链历史记录</span>
           </div>
           <div class="stat-value">{{ stats.onlineNodes }}</div>
           <div class="stat-trend">
-            <span class="trend-icon">✅</span>
-            <span class="trend-text">可用</span>
+            <span class="trend-icon">📚</span>
+            <span class="trend-text">数据库存储</span>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ const stats = ref({
   totalSubscriptions: 0,
   conversions: 0,
   onlineNodes: 0,
-  clients: 25
+  clients: 16
 })
 
 onMounted(async () => {
@@ -463,14 +463,27 @@ function scrollTo(id: string) {
 .three-col-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
+  margin-top: 32px;
+  align-items: stretch;
+}
+
+.three-col-grid > * {
+  min-height: 0;
+  height: 100%;
 }
 
 .three-col-grid .card {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  min-height: 400px !important;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+/* 批量转换卡片允许超出高度 */
+.three-col-grid .card:has(.results) {
+  height: auto !important;
+  min-height: 450px !important;
+  max-height: none !important;
 }
 
 .three-col-grid .card-body {

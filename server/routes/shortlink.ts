@@ -42,13 +42,9 @@ router.post('/', async (req: Request, res: Response) => {
         const existingLink = existingLinks.find(link => link.original_url === url)
 
         if (existingLink) {
-            const baseUrl = `${req.protocol}://${req.get('host')}`
             return res.json({
-                shortUrl: `${baseUrl}/s/${existingLink.short_code}`,
-                id: existingLink.short_code,
-                originalUrl: url,
-                created: existingLink.created_at,
-                clicks: existingLink.clicks
+                success: true,
+                code: existingLink.short_code
             })
         }
 
@@ -71,15 +67,11 @@ router.post('/', async (req: Request, res: Response) => {
         }
 
         // 创建短链接
-        const newLink = await createShortLink(shortCode, url)
+        await createShortLink(shortCode, url)
 
-        const baseUrl = `${req.protocol}://${req.get('host')}`
         res.json({
-            shortUrl: `${baseUrl}/s/${shortCode}`,
-            id: shortCode,
-            originalUrl: url,
-            created: newLink.created_at,
-            clicks: 0
+            success: true,
+            code: shortCode
         })
 
     } catch (error) {

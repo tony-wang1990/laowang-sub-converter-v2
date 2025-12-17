@@ -40,12 +40,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const text = ref('')
 const qrCodeUrl = ref('')
 const loading = ref(false)
 const error = ref('')
+
+// 当输入被清空时，自动清除二维码
+watch(text, (newValue) => {
+  if (!newValue || newValue.trim() === '') {
+    qrCodeUrl.value = ''
+    error.value = ''
+  }
+})
 
 async function generateQRCode() {
   loading.value = true
