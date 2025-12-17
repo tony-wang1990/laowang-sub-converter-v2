@@ -1,10 +1,5 @@
 # 🚀 LaoWang Config Manager V2.0
 
-<p align="center">
-  <img src="docs/images/demo-header.png" alt="LaoWang Config Manager" width="100%">
-</p>
-
-<p align="center">
   <strong>现代化的配置管理工具 | Modern Configuration Manager</strong>
 </p>
 
