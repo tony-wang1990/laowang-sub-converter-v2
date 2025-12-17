@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://laowang-config.zeabur.app">🌐 在线演示</a> •
+  <a href="https://laowang-sub.zeabur.app/">🌐 在线演示</a> •
   <a href="#功能特性">✨ 功能特性</a> •
   <a href="#部署指南">📦 部署指南</a> •
   <a href="#使用说明">📖 使用说明</a>
