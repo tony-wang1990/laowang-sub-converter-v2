@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-  <a href="http://test.199060.xyz"><img src="https://img.shields.io/badge/在线演示-TEST.199060.XYZ-007EC6?style=flat-square&logo=googlechrome&logoColor=white&labelColor=555555" alt="在线演示"></a> •
+  <a href="https://laowang-sub.zeabur.app/"><img src="https://img.shields.io/badge/在线演示-laowang--sub.zeabur.app-007EC6?style=flat-square&logo=googlechrome&logoColor=white&labelColor=555555" alt="在线演示"></a> •
   <a href="#功能特性">✨ 功能特性</a> •
   <a href="#部署指南">📦 部署指南</a> •
   <a href="#使用说明">📖 使用说明</a>
