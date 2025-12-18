@@ -67,14 +67,14 @@ vless://uuid@server:443"
         </div>
         <div class="result-list">
           <div v-for="(result, index) in results" :key="index" class="result-item">
-            <input
-              type="text"
-              :value="result"
+            <textarea
               readonly
+              :value="result"
               class="result-url"
               style="color: #1a202c !important; font-weight: 600 !important; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 255, 0.95) 100%) !important;"
+              rows="3"
               @click="selectText"
-            />
+            ></textarea>
             <button class="btn-copy-small" @click="copyUrl(result)" :title="`复制链接 ${index + 1}`">
               复制{{ index + 1 }}
             </button>
@@ -180,7 +180,7 @@ async function batchConvert() {
 }
 
 function selectText(event: Event) {
-  const input = event.target as HTMLInputElement
+  const input = event.target as HTMLTextAreaElement
   input.select()
 }
 
@@ -296,10 +296,12 @@ function copyUrl(url: string) {
   transition: all 0.3s ease;
   font-weight: 600;
   word-break: break-all;
-  line-height: 1.4;
-  min-height: 40px;
-  display: flex;
-  align-items: center;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  min-height: 45px;
+  height: auto;
+  resize: none; 
 }
 
 .result-url::selection {
@@ -349,6 +351,31 @@ function copyUrl(url: string) {
 
 .btn-copy-small:active {
   transform: translateY(0);
+}
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .result-item {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .result-url {
+    width: 100%;
+    font-size: 12px;
+    padding: 10px 12px;
+    min-height: auto;
+  }
+
+  .btn-copy-small {
+    width: 100%;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .result-list {
+    max-height: 500px;
+  }
 }
 </style>
 ```

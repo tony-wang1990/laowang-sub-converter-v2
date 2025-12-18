@@ -122,4 +122,21 @@ function downloadQRCode() {
   color: white;
   font-size: 14px;
 }
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .qr-preview {
+    padding: var(--spacing-sm);
+  }
+
+  .qr-image {
+    width: 180px;
+    height: 180px;
+  }
+
+  .btn {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
 </style>

@@ -199,6 +199,7 @@ function scrollTo(id: string) {
 .modern-dashboard {
   min-height: 100vh;
   width: 100%;
+  max-width: 100vw;
   position: relative;
   overflow-x: hidden;
 }
@@ -261,12 +262,14 @@ function scrollTo(id: string) {
 
 .header-wrapper {
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-lg);
+  box-sizing: border-box;
 }
 
 .brand {
@@ -354,7 +357,9 @@ function scrollTo(id: string) {
   z-index: 1;
   padding: 60px 40px;
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .stats-wrapper {
@@ -421,8 +426,10 @@ function scrollTo(id: string) {
   position: relative;
   z-index: 1;
   max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 40px 80px;
+  box-sizing: border-box;
 }
 
 .feature-block {
@@ -466,6 +473,8 @@ function scrollTo(id: string) {
   gap: 24px;
   margin-top: 32px;
   align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .three-col-grid > * {
@@ -511,8 +520,8 @@ function scrollTo(id: string) {
   .header-wrapper,
   .stats-showcase,
   .content-area {
-    padding-left: 28px;
-    padding-right: 28px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .two-col-grid {
@@ -528,14 +537,54 @@ function scrollTo(id: string) {
   .main-nav {
     display: none;
   }
-
-  .stats-wrapper,
-  .three-col-grid {
-    grid-template-columns: 1fr;
+  
+  .header-wrapper,
+  .stats-showcase,
+  .content-area {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 
+  /* 强制所有 Grid 变 Flex 单列并居中 */
+  .stats-wrapper,
+  .three-col-grid,
+  .two-col-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* 强制水平居中 */
+    justify-content: center !important;
+    gap: 16px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  /* 确保卡片本身占满容器宽度的合适比例，并居中 */
+  .stats-wrapper > *,
+  .three-col-grid > *,
+  .two-col-grid > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+  
   .block-title {
     font-size: 28px;
+    justify-content: center; /* 标题也居中 */
+    text-align: center;
+  }
+  
+  .block-desc {
+    text-align: center; /* 描述文字居中 */
+    padding: 0 10px;
+  }
+  
+  .block-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .stat-value {
@@ -544,13 +593,6 @@ function scrollTo(id: string) {
 }
 
 @media (max-width: 480px) {
-  .header-wrapper,
-  .stats-showcase,
-  .content-area {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
   .brand-icon {
     width: 48px;
     height: 48px;
@@ -558,7 +600,16 @@ function scrollTo(id: string) {
   }
 
   .brand-name {
-    font-size: 20px;
+    font-size: 18px;
+    word-break: break-word;
+  }
+  
+  /* 确保更小屏幕也有边距 */
+  .header-wrapper,
+  .stats-showcase,
+  .content-area {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
 }
 </style>

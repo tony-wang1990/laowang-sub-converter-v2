@@ -33,14 +33,14 @@
             复制
           </button>
         </div>
-        <input 
-          type="text" 
+        <textarea 
           :value="shortUrl" 
           readonly 
           class="result-input"
           style="color: #1a202c !important; font-weight: 600 !important; background: rgba(255, 255, 255, 0.95) !important;"
+          rows="2"
           @click="selectAll"
-        />
+        ></textarea>
         <div class="result-hint">点击输入框全选复制</div>
       </div>
 
@@ -138,7 +138,7 @@ async function createShortLink() {
 }
 
 function selectAll(event: Event) {
-  const input = event.target as HTMLInputElement
+  const input = event.target as HTMLTextAreaElement
   input.select()
 }
 
@@ -226,6 +226,13 @@ function copyShortLink() {
   outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  min-height: 60px;
+  height: auto;
+  resize: none;
 }
 
 .result-input::selection {
@@ -260,5 +267,30 @@ function copyShortLink() {
   border-radius: var(--radius-md);
   color: white;
   font-size: 14px;
+}
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .result-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-copy {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+
+  .result-input {
+    font-size: 13px;
+    padding: 14px 16px;
+  }
+
+  .success-text {
+    font-size: 16px;
+  }
 }
 </style>

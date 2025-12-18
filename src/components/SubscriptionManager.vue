@@ -44,7 +44,7 @@
         :key="sub.id"
         class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
       >
-        <div class="flex-1 overflow-hidden mr-4">
+        <div class="flex-1 overflow-hidden mr-4 min-w-0">
           <div class="flex items-center gap-2">
             <div class="font-medium text-gray-800 dark:text-gray-200 truncate">{{ sub.name }}</div>
             <span 
@@ -55,7 +55,7 @@
               {{ sub.group_name }}
             </span>
           </div>
-          <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ sub.url }}</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400 break-all mt-1">{{ sub.url }}</div>
           <!-- Tags -->
           <div v-if="sub.tags" class="flex flex-wrap gap-1 mt-1">
             <span 
@@ -371,5 +371,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Add any specific styles if needed */
+/* Ensure long URLs wrap correctly */
+.break-all {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Fix flex child overflow */
+.min-w-0 {
+  min-width: 0;
+}
 </style>

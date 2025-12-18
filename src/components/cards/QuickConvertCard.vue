@@ -94,14 +94,14 @@
             复制
           </button>
         </div>
-        <input 
-          type="text" 
+        <textarea 
           :value="result" 
           readonly 
           class="result-input"
           style="color: #1a202c !important; font-weight: 600 !important; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 255, 0.95) 100%) !important;"
+          rows="4"
           @click="selectText"
-        />
+        ></textarea>
         <div class="result-hint">点击输入框全选复制</div>
       </div>
 
@@ -288,7 +288,7 @@ function copyUrl() {
 }
 
 function selectText(event: Event) {
-  const input = event.target as HTMLInputElement
+  const input = event.target as HTMLTextAreaElement
   input.select()
 }
 
@@ -519,6 +519,13 @@ async function downloadQR() {
   outline: none;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  min-height: 100px;
+  height: auto;
+  resize: none;
 }
 
 .result-input::selection {
@@ -617,6 +624,64 @@ async function downloadQR() {
 @media (max-width: 1024px) {
   .quick-convert-card {
     grid-column: span 1;
+  }
+
+  .client-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* 移动端响应式优化 */
+@media (max-width: 768px) {
+  .result-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-copy {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+
+  .result-input {
+    font-size: 13px;
+    padding: 14px 16px;
+  }
+
+  .success-text {
+    font-size: 16px;
+  }
+
+  .client-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .client-btn {
+    padding: 12px 8px;
+    min-height: 85px;
+  }
+
+  .client-icon-img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .client-name {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .client-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .client-btn {
+    min-height: 90px;
   }
 }
 </style>

@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-  <a href="https://laowang-sub.zeabur.app/">🌐 在线演示</a> •
+  <a href="http://test.199060.xyz"><img src="https://img.shields.io/badge/在线演示-TEST.199060.XYZ-007EC6?style=flat-square&logo=googlechrome&logoColor=white&labelColor=555555" alt="在线演示"></a> •
   <a href="#功能特性">✨ 功能特性</a> •
   <a href="#部署指南">📦 部署指南</a> •
   <a href="#使用说明">📖 使用说明</a>
@@ -39,19 +39,9 @@
 
 ## 📸 界面预览
 
-### 首页 - 快速转换
+### 界面预览
 <p align="center">
-  <img src="docs/images/demo-header.png" alt="快速转换" width="100%">
-</p>
-
-### 订阅管理 & 节点测速
-<p align="center">
-  <img src="docs/images/demo-manage.png" alt="订阅管理" width="100%">
-</p>
-
-### 实用工具
-<p align="center">
-  <img src="docs/images/demo-tools.png" alt="实用工具" width="100%">
+  <img src="demo_preview_v2.png" alt="界面预览" width="100%">
 </p>
 
 ---

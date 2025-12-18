@@ -271,6 +271,8 @@ watch(results, () => {
   gap: 4px;
   overflow: hidden;
   margin-right: 12px;
+  min-width: 0;
+  flex: 1;
 }
 
 .node-name {
@@ -280,6 +282,17 @@ watch(results, () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 480px) {
+  .check-result-item {
+    padding: 10px 12px;
+  }
+  
+  .node-name {
+    white-space: normal;
+    word-break: break-all;
+  }
 }
 
 .node-address {

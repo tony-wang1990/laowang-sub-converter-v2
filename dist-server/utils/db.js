@@ -10,9 +10,10 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
     else {
         console.log('Connected to SQLite database');
-        initSchema();
     }
 });
+// Initialize schema immediately to ensure tables exist before usage
+initSchema();
 function initSchema() {
     // Check if we need to migrate subscriptions table
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND name='subscriptions'", [], (err, row) => {

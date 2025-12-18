@@ -30,7 +30,7 @@
           <div v-for="sub in subscriptions" :key="sub.id" class="sub-item">
             <div class="sub-info">
               <div class="sub-name">{{ sub.name }}</div>
-              <div class="sub-url" :title="sub.url">{{ sub.url }}</div>
+              <div class="sub-url" :title="sub.url">{{ sub.url.length > 30 ? sub.url.substring(0, 30) + '...' : sub.url }}</div>
             </div>
             <div class="sub-actions">
               <button class="btn-icon" @click="copySub(sub)" title="复制链接">
@@ -365,6 +365,20 @@ function closeModal() {
   border: 2px solid rgba(255, 255, 255, 0.4);
   transition: all 0.2s ease;
   width: 100%;
+  flex-wrap: wrap; /* Allow wrapping on very small screens */
+}
+
+@media (max-width: 480px) {
+  .sub-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .sub-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .sub-item:hover {
@@ -379,7 +393,9 @@ function closeModal() {
   flex: 1;
   overflow: hidden;
   min-width: 0;
-  max-width: 400px !important;
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
 }
 
 .sub-name {
@@ -393,10 +409,9 @@ function closeModal() {
 .sub-url {
   font-size: 12px;
   color: var(--text-muted);
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-  max-width: 300px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: block;
 }
 
